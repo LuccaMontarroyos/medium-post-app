@@ -5,8 +5,8 @@ export const userStoreSchema = Yup.object().shape({
 });
 
 export const userUpdateSchema = Yup.object().shape({
-  name: Yup.string().required(),
-  email: Yup.email().required(),
+  name: Yup.string().optional(),
+  email: Yup.email().optional(),
   oldPassword: Yup.string().min(6),
   password: Yup.string().min(6).when("oldPassword", (oldPassword, field) => oldPassword ? field.required() : field),
   confirmPassword: Yup.string().when("password", (password, field) => password ? field.required().oneOf([Yup.ref("password")]) : field

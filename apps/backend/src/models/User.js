@@ -22,11 +22,14 @@ class User extends Model {
 
     return this;
   }
+  
+  static associate(models) {
+    this.hasMany(models.Post, { foreignKey: "user_id", as: "posts" });
+  }
 
   checkPassword(password) {
     return bcrypt.compare(password, this.password_hash);
   }
-
 }
 
 export default User;

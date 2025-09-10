@@ -41,5 +41,15 @@ class UserController {
         return res.status(400).json({ error: "Usuário já existe." });
       }
     }
+
+    if (oldPassword && !(await user.checkPassword(oldPassword))) {
+      return res.status(401).json({ error: "Senha incorreta." });
+    }
+
+    const { id, name } = await user.update(req.body);
+
+    return res.json({ id, name, email });
   }
 }
+
+export default new UserController();
