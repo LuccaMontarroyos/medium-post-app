@@ -1,5 +1,4 @@
-import PostLike from "../models/PostLike";
-import sequelize from "../database/index";
+import LikeService from "../services/LikeService";
 
 class LikeController {
   async toggle(req, res) {
@@ -7,33 +6,8 @@ class LikeController {
     const user_id = req.userId;
 
     try {
-      const like = await sequelize.transaction(async (t) => {
-        let existingLike = await PostLike.findOne({
-          where: {
-            post_id,
-            user_id,
-          },
-          transaction: t,
-        });
-        if (!existingLike) {
-          
-          existingLike = await PostLike.create(
-            { post_id, user_id, is_deleted: false },
-            { transaction: t }
-          );
-        } else {
-      
-          existingLike.is_deleted = !existingLike.is_deleted;
-          await existingLike.save({ transaction: t });
-        }
-
-        return existingLike;
-      });
-
-      
-      await delCache("posts:*");
-
-      return res.json({ liked: !like.is_deleted });
+      const result = await LikeService.toggleLike({ post_id, user_id });
+      return res.json(result);
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: "Erro ao curtir/descurtir o post." });

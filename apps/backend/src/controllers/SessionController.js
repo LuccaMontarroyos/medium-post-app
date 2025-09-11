@@ -1,36 +1,21 @@
-import User from "../models/User";
-import jwt from "jsonwebtoken";
+import AuthService from "../services/AuthService";
 
 class SessionController {
-    async store(req, res) {
-        const { email, password } = req.body;
-        
-        const user = await User.findOne({
-            where: {
-                email
-            }
-        });
+  async store(req, res) {
+    const { email, password } = req.body;
 
-        if (!user) {
-            return res.status(401).json({ error: "Usuário não existe."});
-        }
-
-        if(!(await user.checkPassword(password))) {
-            return res.status(401).json({ error: "Senha inválida."})
-        }
-
-        const {id, name} = user;
-        return res.json({user: {
-            id,
-            name,
-            email
-        },
-        token:
-        jwt.sign({id}, authConfig.secret, {
-            expiresIn: authConfig.expiresIn
-        })
-    })
+    try {
+      const result = await AuthService.login(email, password);
+      return res.json(result);
+    } catch (error) {
+      // Define status 401 para erros de autenticação
+      const status =
+        error.message === "Usuário não existe." || error.message === "Senha inválida."
+          ? 401
+          : 500;
+      return res.status(status).json({ error: error.message });
     }
+  }
 }
 
 export default new SessionController();
