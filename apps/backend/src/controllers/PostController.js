@@ -1,6 +1,7 @@
 import { Op, literal } from "sequelize";
 import Post from "../models/Post";
-import redisClient, { getCache, setCache, delCache } from "../config/redis";
+import { getCache, setCache, delCache } from "../config/redis";
+import sequelize from "../config/database";
 
 class PostController {
   async index(req, res) {
@@ -8,7 +9,7 @@ class PostController {
       const limit = Math.min(parseInt(req.query.limit, 10) || 5, 50);
       const cursor = req.query.cursor || null;
       const currentUserId = req.userId || null;
-      const cacheKey = `posts:cursor-${cursor || 'first'}:limit-${limit}`;
+      const cacheKey = `posts:cursor-${cursor || "first"}:limit-${limit}`;
 
       const cached = await getCache(cacheKey);
       if (cached) {
@@ -84,7 +85,6 @@ class PostController {
         };
       });
 
-      
       // Calcula próximo cursor
       let nextCursor = null;
       if (posts.length > 0) {
@@ -105,55 +105,81 @@ class PostController {
   }
 
   async store(req, res) {
-    const { title, text, resume, schedule_date } = req.body;
+    try {
+      const post = await sequelize.transaction(async (t) => {
+        const { title, text, resume, schedule_date } = req.body;
 
-    const post = await Post.create({
-      user_id: req.userId,
-      title,
-      text,
-      resume,
-      post_date: schedule_date ? schedule_date : new Date(),
-    });
+        const createdPost = await Post.create(
+          {
+            user_id: req.userId,
+            title,
+            text,
+            resume,
+            post_date: schedule_date ? schedule_date : new Date(),
+          },
+          { transaction: t }
+        );
+        return createdPost;
+      });
 
-    await delCache('posts:*');
+      await delCache("posts:*");
 
-    return res.json(post);
+      return res.json(post);
+    } catch (error) {
+      return res.status(500).json({ error: "Erro ao criar post" });
+    }
   }
 
   async update(req, res) {
-    const { post_id } = req.params;
+    try {
+      const updatedPost = await sequelize.transaction(async (t) => {
+        const { post_id } = req.params;
+        const post = await Post.findByPk(post_id);
 
-    const post = await Post.findByPk(post_id);
+        if (!post) {
+          throw new Error("Post não encontrado.");
+        }
 
-    if (!post) {
-      return res.status(400).json({ error: "Post não encontrado." });
+        return await post.update(req.body, { transaction: t });
+      });
+
+      await delCache("posts:*");
+
+      return res.json(updatedPost);
+    } catch (error) {
+      const status = error.message === "Post não encontrado." ? 400 : 500;
+      return res.status(status).json({ error: error.message });
     }
-
-    await post.update(req.body);
-
-    await delCache('posts:*');
-
-    return res.send();
   }
 
   async destroy(req, res) {
-    const { post_id } = req.params;
+    try {
+      await sequelize.transaction(async (t) => {
+        const { post_id } = req.params;
 
-    const post = await Post.findByPk(post_id);
+        const post = await Post.findByPk(post_id, { transaction: t });
 
-    if (!post) {
-      return res.status(400).json({ error: "Esse post não existe." });
+        if (!post) {
+          throw new Error("Esse post não existe.");
+        }
+
+        if (post.user_id !== req.userId) {
+          throw new Error("Requisição não autorizada.");
+        }
+
+        await post.destroy({ transaction: t });
+      });
+
+      await delCache("posts:*");
+
+      return res.send();
+    } catch (error) {
+      let status = 500;
+      if (error.message === "Esse post não existe.") status = 400;
+      if (error.message === "Requisição não autorizada.") status = 403;
+
+      return res.status(status).json({ error: error.message });
     }
-
-    if (post.user_id !== req.userId) {
-      return res.status(403).json({ error: "Requisição não autorizada." });
-    }
-
-    await post.destroy();
-
-    await delCache('posts:*');
-
-    return res.send();
   }
 }
 
