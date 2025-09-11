@@ -1,5 +1,6 @@
 import { Op, literal } from "sequelize";
 import Post from "../models/Post";
+import redisClient, { getCache, setCache, delCache } from "../config/redis";
 
 class PostController {
   async index(req, res) {
@@ -7,6 +8,12 @@ class PostController {
       const limit = Math.min(parseInt(req.query.limit, 10) || 5, 50);
       const cursor = req.query.cursor || null;
       const currentUserId = req.userId || null;
+      const cacheKey = `posts:cursor-${cursor || 'first'}:limit-${limit}`;
+
+      const cached = await getCache(cacheKey);
+      if (cached) {
+        return res.json(cached);
+      }
 
       // Base do where (somente posts publicados)
       const where = {
@@ -45,10 +52,18 @@ class PostController {
         ],
         attributes: {
           include: [
-            [literal(`SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.is_deleted = false`), "totalLikes"],
+            [
+              literal(
+                `SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.is_deleted = false`
+              ),
+              "totalLikes",
+            ],
           ],
         },
-        order: [["post_date", "DESC"], ["id", "DESC"]],
+        order: [
+          ["post_date", "DESC"],
+          ["id", "DESC"],
+        ],
         limit,
         subQuery: false,
       });
@@ -69,6 +84,7 @@ class PostController {
         };
       });
 
+      
       // Calcula próximo cursor
       let nextCursor = null;
       if (posts.length > 0) {
@@ -77,10 +93,11 @@ class PostController {
         nextCursor = Buffer.from(rawCursor).toString("base64");
       }
 
-      return res.json({
-        posts: formatted,
-        nextCursor,
-      });
+      const response = { posts: formatted, nextCursor };
+
+      await setCache(cacheKey, response, 60);
+
+      return res.json(response);
     } catch (err) {
       console.error(err);
       return res.status(500).json({ error: "Erro ao listar posts" });
@@ -88,7 +105,6 @@ class PostController {
   }
 
   async store(req, res) {
-
     const { title, text, resume, schedule_date } = req.body;
 
     const post = await Post.create({
@@ -98,6 +114,8 @@ class PostController {
       resume,
       post_date: schedule_date ? schedule_date : new Date(),
     });
+
+    await delCache('posts:*');
 
     return res.json(post);
   }
@@ -113,6 +131,7 @@ class PostController {
 
     await post.update(req.body);
 
+    await delCache('posts:*');
 
     return res.send();
   }
@@ -131,6 +150,8 @@ class PostController {
     }
 
     await post.destroy();
+
+    await delCache('posts:*');
 
     return res.send();
   }

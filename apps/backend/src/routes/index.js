@@ -5,22 +5,23 @@ import SessionController from "../controllers/SessionController";
 
 import authMiddleware from "../middlewares/auth";
 
-import schemaValidator from "../middlewares/schemaValidator";
+import SchemaValidator from "../middlewares/SchemaValidator";
+
 import { userCreateSchema, userUpdateSchema } from "../schemas/UserSchema";
 import { postCreateSchema } from "../schemas/PostSchema";
 
 const routes = new Router();
 
 routes.post("/login", SessionController.store);
-routes.post("/users", schemaValidator(userCreateSchema), UserController.store);
+routes.post("/users", SchemaValidator.validate(userCreateSchema), UserController.store);
 
 routes.use(authMiddleware);
 
-routes.put("/users/", schemaValidator(userUpdateSchema), UserController.update);
+routes.put("/users/", SchemaValidator.validate(userUpdateSchema), UserController.update);
 
-routes.post("/posts", schemaValidator(postCreateSchema), PostController.store);
+routes.get("/posts", PostController.index);
+routes.post("/posts", SchemaValidator.validate(postCreateSchema), PostController.store);
 routes.put("/posts/:post_id", PostController.update);
 routes.delete("/posts/:post_id", PostController.destroy);
-routes.get("/posts", PostController.index);
 
 routes.post("/posts/:post_id/like", LikeController.toggle);
