@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="UTF-8" />
+  <title>Medium Post App</title>
+
+  <!-- Doca UI (CDN) -->
+  <link rel="stylesheet" href="https://cdn.amigotech.com.br/amigo-apps/doca-ui/min.css">
+
+</head>
+<body>
+  <!-- Header -->
+  <div ng-include="'views/header.html'"></div>
+
+  <!-- Conteúdo das rotas -->
+  <div ng-view></div>
+
+  <!-- AngularJS e dependências -->
+  <script src="../node_modules/angular/angular.js"></script>
+  <script src="../node_modules/angular-route/angular-route.js"></script>
+  <script src="../node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js"></script>
+  <script src="../node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+
+  <!-- Nosso app -->
+  <script src="../src/app.js"></script>
+</body>
+</html>
