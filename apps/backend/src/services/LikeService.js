@@ -1,6 +1,6 @@
-import sequelize from "../config/database";
-import PostLike from "../models/PostLike";
-import { delCache } from "../config/redis";
+import sequelize from "../database/index.js";
+import PostLike from "../models/PostLike.js";
+import { delCache } from "../config/redis.js";
 
 class LikeService {
   async toggleLike({ post_id, user_id }) {

@@ -1,5 +1,5 @@
-import User from "../models/User";
-import sequelize from "../config/database";
+import User from "../models/User.js";
+import sequelize from "../database/index.js";
 
 class UserService {
   async createUser(data) {

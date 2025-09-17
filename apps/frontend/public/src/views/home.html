@@ -1,0 +1,9 @@
+<div ng-controller="FeedController">
+    <div ng-if="loading">Carregando posts...</div>
+    <div ng-if="error">{{ error }}</div>
+  
+    <div class="feed">
+      <post-card ng-repeat="post in posts" post="post"></post-card>
+    </div>
+  </div>
+  

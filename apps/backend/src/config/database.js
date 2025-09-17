@@ -1,5 +1,9 @@
-require("dotenv").config();
-module.exports = {
+import dotenv from "dotenv";
+
+dotenv.config();
+// const dotenv = require('dotenv').config();
+
+export default {
     dialect: process.env.DB_DIALECT,
     host: process.env.DB_HOST,
     username: process.env.DB_USERNAME,
@@ -9,5 +13,6 @@ module.exports = {
         timestamps: true,
         underscored: true,
         underscoredAll: true,
-    }
+    },
+    timezone: "+00:00"
 }

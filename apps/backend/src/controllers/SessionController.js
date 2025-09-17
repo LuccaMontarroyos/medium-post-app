@@ -1,4 +1,4 @@
-import AuthService from "../services/AuthService";
+import AuthService from "../services/AuthService.js";
 
 class SessionController {
   async store(req, res) {

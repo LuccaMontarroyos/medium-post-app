@@ -1,4 +1,5 @@
-import PostService from "../services/PostService";
+import PostService from "../services/PostService.js";
+import { deleteImageFile } from "../utils/fileHelper.js";
 
 class PostController {
   async index(req, res) {
@@ -18,7 +19,8 @@ class PostController {
 
   async store(req, res) {
     try {
-      const post = await PostService.createPost({ userId: req.userId, ...req.body });
+      const imagePath = req.file ? `/uploads/posts/${req.file.filename}` : null;
+      const post = await PostService.createPost({ userId: req.userId, ...req.body, image: imagePath, });
       return res.json(post);
     } catch (error) {
       return res.status(500).json({ error: "Erro ao criar post" });

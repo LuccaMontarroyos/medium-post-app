@@ -1,0 +1,53 @@
+<div class="modal-overlay" ng-click="closeModal()">
+    <div class="modal-container" ng-click="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-logo">
+          <div class="brand-logo">P</div>
+          <span class="brand-text">PostApp</span>
+        </div>
+        <button class="close-btn" type="button" ng-click="closeModal()">×</button>
+      </div>
+  
+      <div class="modal-body">
+        <div class="modal-content">
+          <h2 class="modal-title">Create an account</h2>
+          <p class="modal-subtitle">Sign up to start posting.</p>
+  
+          <form class="auth-form" ng-submit="register()">
+            <div class="form-group">
+              <label class="form-label">Name</label>
+              <input type="text" ng-model="user.name" class="form-input" placeholder="Enter your name" required>
+            </div>
+  
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" ng-model="user.email" class="form-input" placeholder="Enter your email" required>
+            </div>
+  
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input type="password" ng-model="user.password" class="form-input" placeholder="Enter your password" required>
+            </div>
+  
+            <button type="submit" class="submit-btn" ng-disabled="loading">
+              <span ng-if="!loading">Sign up</span>
+              <span ng-if="loading" class="loading-spinner">⟳</span>
+            </button>
+  
+            <div class="error-message" ng-if="error">
+              <span class="error-icon">⚠</span>
+              {{error}}
+            </div>
+          </form>
+  
+          <div class="modal-footer">
+            <p class="footer-text">
+              Already have an account?
+              <a href="#" class="footer-link" ng-click="switchToLogin()">Sign in</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

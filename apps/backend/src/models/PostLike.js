@@ -4,8 +4,8 @@ class PostLike extends Model {
   static init(sequelize) {
     super.init(
       {
-        user_id: Sequelize.STRING,
-        post_id: Sequelize.STRING,
+        user_id: Sequelize.INTEGER,
+        post_id: Sequelize.INTEGER,
         is_deleted: {
             type: Sequelize.BOOLEAN,
             defaultValue: false,
@@ -26,4 +26,4 @@ class PostLike extends Model {
 
 }
 
-export default new Postlike();
+export default PostLike;

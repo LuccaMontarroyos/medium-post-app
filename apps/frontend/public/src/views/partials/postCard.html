@@ -1,0 +1,43 @@
+<div class="post-card">
+  <div class="post-content-wrapper">
+    <div class="post-main-content">
+      <div class="post-header">
+        <div class="user-info">
+          <div class="user-avatar">
+            <span>{{ post.user.name.charAt(0).toUpperCase() }}</span>
+          </div>
+          <div class="user-details">
+            <strong>{{ post.user.name }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="post-body">
+        <h2 class="post-title">{{ post.title }}</h2>
+        <p class="post-content">{{ post.text }}</p>
+      </div>
+
+      <div class="post-meta">
+        <span class="post-date">{{ post.post_date | date:'MMM d, yyyy' }}</span>
+        <span class="post-stats">
+          <button class="like-button" ng-click="toggleLike(post)" ng-class="{'liked': post.isLiked}">
+            <span class="like-icon"></span>
+            <span class="like-count">{{ post.totalLikes || 0 }}</span>
+          </button>
+          <span class="comments">294</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="post-image" ng-if="post.image">
+      <img ng-src="{{post.image}}" alt="{{post.resume}}">
+      </div>
+
+      <div class="post-image" ng-if="!post.image">
+        <div class="image-placeholder">
+          <span>◈</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

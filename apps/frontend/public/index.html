@@ -1,27 +1,43 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="app">
-<head>
-  <meta charset="UTF-8" />
-  <title>Medium Post App</title>
+<html ng-app="app">
 
-  <!-- Doca UI (CDN) -->
-  <link rel="stylesheet" href="https://cdn.amigotech.com.br/amigo-apps/doca-ui/min.css">
+<head>
+    <meta charset="UTF-8">
+    <title>Feed de Posts</title>
+    <link rel="stylesheet" href="https://cdn.amigotech.com.br/amigo-apps/doca-ui/min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="src/styles/main.css">
+    <link rel="stylesheet" href="assets/css/post.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.6/ui-bootstrap-tpls.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+
+
+
+    <script src="src/app.js"></script>
+    <script src="src/config/routes.js"></script>
+
+    <script src="src/services/authService.js"></script>
+    <script src="src/services/postService.js"></script>
+    <script src="src/services/userService.js"></script>
+
+    <script src="src/controllers/AuthController.js"></script>
+    <script src="src/controllers/PostController.js"></script>
+    <script src="src/controllers/FeedController.js"></script>
+    <script src="src/controllers/ModalLoginController.js"></script>
+    <script src="src/controllers/ModalRegisterController.js"></script>
+
+    <script src="src/directives/postCard.js"></script>
 
 </head>
+
 <body>
-  <!-- Header -->
-  <div ng-include="'views/header.html'"></div>
-
-  <!-- Conteúdo das rotas -->
-  <div ng-view></div>
-
-  <!-- AngularJS e dependências -->
-  <script src="../node_modules/angular/angular.js"></script>
-  <script src="../node_modules/angular-route/angular-route.js"></script>
-  <script src="../node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js"></script>
-  <script src="../node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
-
-  <!-- Nosso app -->
-  <script src="../src/app.js"></script>
+    <div ng-include="'src/views/partials/header.html'"></div>
+    <div ng-view></div>
+    <div ng-include="'src/views/partials/footer.html'"></div>
 </body>
+
 </html>

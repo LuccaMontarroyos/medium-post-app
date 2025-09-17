@@ -1,12 +1,12 @@
 import jwt from "jsonwebtoken";
-import authConfig from "../config/auth";
+import authConfig from "../config/auth.js";
 import { promisify }from "util"
 
 export default async (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
-        return req.status(401).json({ error: "Token não existe."})
+        return res.status(401).json({ error: "Token não existe."})
     }
 
     const [, token] = authHeader.split(' ');

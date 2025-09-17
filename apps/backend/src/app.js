@@ -1,7 +1,9 @@
 import express from "express";
 import cors from "cors";
+import routes from "./routes/index.js";
+import path from "path";
 
-import database from "./database";
+import database from "./database/index.js";
 
 class App {
     constructor() {
@@ -14,6 +16,7 @@ class App {
     middlewares() {
         this.server.use(cors());
         this.server.use(express.json());
+        this.server.use("/uploads", express.static(path.resolve(process.cwd(), "uploads")));
     }
 
     routes() {

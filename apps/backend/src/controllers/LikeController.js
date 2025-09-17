@@ -1,4 +1,4 @@
-import LikeService from "../services/LikeService";
+import LikeService from "../services/LikeService.js";
 
 class LikeController {
   async toggle(req, res) {

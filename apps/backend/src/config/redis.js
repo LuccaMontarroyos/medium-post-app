@@ -1,6 +1,6 @@
 import { createClient } from 'redis';
 
-const redisClient = createClient();
+export const redisClient = createClient();
 
 await redisClient.connect();
 

@@ -1,6 +1,6 @@
-import User from "../models/User";
+import User from "../models/User.js";
 import jwt from "jsonwebtoken";
-import authConfig from "../config/auth";
+import authConfig from "../config/auth.js";
 
 class AuthService {
   static async login(email, password) {
@@ -17,7 +17,7 @@ class AuthService {
     }
 
     // Gera token JWT
-    const token = jwt.sign({ id: user.id }, authConfig.secret, {
+    const token = jwt.sign({ id: user.id, name: user.name, email: user.email }, authConfig.secret, {
       expiresIn: authConfig.expiresIn,
     });
 

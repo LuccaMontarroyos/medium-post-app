@@ -1,0 +1,44 @@
+<nav class="navbar">
+  <div ng-controller="AuthController" class="navbar-container">
+    <div class="navbar-brand">
+      <a href="#!/" class="brand-link">
+        <div class="brand-logo">P</div>
+        <span class="brand-text">PostApp</span>
+      </a>
+    </div>
+
+    <div class="navbar-search">
+      <div class="search-container">
+        <span class="search-icon">⌕</span>
+        <input type="text" placeholder="Search Post" class="search-input">
+      </div>
+    </div>
+
+    <div class="navbar-actions">
+      <button class="write-btn" ng-if="isLoggedIn">
+        <span class="write-icon">✎</span>
+        Write
+      </button>
+
+      <div class="user-menu" ng-if="isLoggedIn">
+        <button class="notification-btn">
+          <span class="notification-icon">◉</span>
+        </button>
+        <div class="user-avatar" ng-click="toggleUserMenu()">
+          <span>{{user.name.charAt(0).toUpperCase()}}</span>
+        </div>
+        <div class="user-dropdown" ng-show="showUserMenu">
+          <a href="#" class="dropdown-item">Profile</a>
+          <a href="#" class="dropdown-item">Settings</a>
+          <hr class="dropdown-divider">
+          <a href="#" class="dropdown-item" ng-click="logout()">Sign out</a>
+        </div>
+      </div>
+
+      <div class="auth-buttons" ng-if="!isLoggedIn">
+        <button class="login-btn" ng-click="openLoginModal()">Login</button>
+        <button class="signup-btn" ng-click="openRegisterModal()">Register</button>
+      </div>
+    </div>
+  </div>
+</nav>

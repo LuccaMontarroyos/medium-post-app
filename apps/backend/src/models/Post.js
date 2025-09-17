@@ -1,12 +1,13 @@
-import { Model } from "sequelize";
+import Sequelize, { Model } from "sequelize";
 
 class Post extends Model {
     static init(sequelize) {
         super.init({
-            title: Sequelize.STRING,
+                title: Sequelize.STRING,
               text: Sequelize.STRING,
               resume: Sequelize.STRING,
               post_date: Sequelize.DATE,
+              image: Sequelize.STRING,
         }, {
             sequelize
         })
@@ -17,4 +18,4 @@ class Post extends Model {
     }
 }
 
-export default new Post();
+export default Post;

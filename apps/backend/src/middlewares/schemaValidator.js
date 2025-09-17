@@ -1,28 +1,53 @@
-export default class SchemaValidator{
-    static getMessage(error) {
-		const field = error.params.label || error.params.path;
+import ErrorMessages from "../utils/ErrorMessages.js";
+import pickBy from "lodash";
 
-		return ErrorMessages[error.type]
-			? ErrorMessages[error.type](field, error.params.originalValue, error.params.type)
-			: 'Houve um erro, tente novamente em breve.';
-	}
+export default class SchemaValidator {
+  static getMessage(error) {
+    return ErrorMessages[error.type]
+      ? ErrorMessages[error.type](error.path, error.params?.min || "")
+      : error.message || "Houve um erro, tente novamente em breve.";
+  }
 
-    static validate(schema) {
-        return async (req, res, next) => {
-            const {error, results} = SchemaValidator.isValid(schema, req);
-
-            if (error) {
-				return res.status(400).json({
-					status: 'error',
-					type_error: 'VALIDATION_ERROR',
-					message: SchemaValidator.getMessage(error)
-				});
-			}
-
-            req.data = pickBy(results.data, value => !undefined(value));
-			req.filter = pickBy(results.filter, value => !undefined(value));
-
-            return next();
-        }
+  static async isValid(schema, req) {
+    try {
+      const data = await schema.validate(req.body, {
+        abortEarly: false,
+        stripUnknown: true,
+      });
+      const filter = req.query; // se quiser validar query params também
+      return { error: null, results: { data, filter } };
+    } catch (err) {
+      const error = err.inner?.[0] || err;
+      return { error, results: {} };
     }
+  }
+
+  static validate(schema) {
+    return async (req, res, next) => {
+      try {
+        // validação do Yup
+        const results = await schema.validate(req.body, {
+          abortEarly: false,
+          stripUnknown: true,
+        });
+
+        // remove undefined
+        req.data = pickBy(results, (value) => value !== undefined);
+
+        return next();
+      } catch (err) {
+        if (err.name === "ValidationError") {
+          return res.status(400).json({
+            status: "error",
+            type_error: "VALIDATION_ERROR",
+            // pega apenas a primeira mensagem de erro
+            message:
+              err.errors[0] || "Houve um erro, tente novamente em breve.",
+          });
+        }
+
+        return next(err);
+      }
+    };
+  }
 }
