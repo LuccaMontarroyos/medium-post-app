@@ -58,20 +58,30 @@ class PostService {
       ];
     }
 
+    const attributesToInclude = [
+      [
+          literal(`(SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.is_deleted = false)`),
+          "totalLikes",
+      ],
+  ];
+
+  
+  if (currentUserId) {
+      attributesToInclude.push([
+          literal(
+              `(SELECT EXISTS (SELECT 1 FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.user_id = ${currentUserId} AND pl.is_deleted = false))`
+          ),
+          "isLikedByUser",
+      ]);
+  }
+
     const posts = await Post.findAll({
       where,
       include: [
         { model: User, as: "users", attributes: ["id", "name", "email"] },
       ],
       attributes: {
-        include: [
-          [
-            literal(
-              `(SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.is_deleted = false)`
-            ),
-            "totalLikes",
-          ],
-        ],
+        include: attributesToInclude,
       },
       order: [
         ["post_date", "DESC"],
@@ -94,6 +104,7 @@ class PostService {
         totalLikes: Number(data.totalLikes || 0),
         allowEdit: currentUserId === data.user_id,
         allowRemove: currentUserId === data.user_id,
+        isLikedByUser: data.isLikedByUser || false,
       };
     });
 
