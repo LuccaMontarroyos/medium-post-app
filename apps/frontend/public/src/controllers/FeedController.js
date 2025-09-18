@@ -2,45 +2,97 @@ angular.module("app").controller("FeedController", [
   "$scope",
   "PostService",
   "$window",
-  function ($scope, PostService, $window) {
+  "$uibModal",
+  "$location",
+  "$rootScope",
+  function ($scope, PostService, $window, $uibModal, $location, $rootScope) {
     $scope.posts = [];
     $scope.loading = false;
     $scope.cursor = null;
     $scope.error = null;
     $scope.hasMorePosts = true;
 
-    $scope.loadPosts = function () {
+    $scope.loadPosts = function (searchTerm) {
       if ($scope.loading || !$scope.hasMorePosts) return;
       
       $scope.loading = true;
       $scope.error = null;
 
-      PostService.getPosts($scope.cursor).then((res) => {
-        if (res.data && res.data.posts && res.data.posts.length > 0) {
-          $scope.posts = $scope.posts.concat(res.data.posts);
-          $scope.cursor = res.data.nextCursor;
-          if ($scope.cursor) {
-            $scope.hasMorePosts = true;
-          }
-        } else {
+      PostService.getPosts($scope.cursor, 5, searchTerm)
+        .then((res) => {
+          if (res.data && res.data.posts && res.data.posts.length > 0) {
+            $scope.posts = $scope.posts.concat(res.data.posts);
+            $scope.cursor = res.data.nextCursor;
+            $scope.hasMorePosts = !!$scope.cursor;
+          } else {
             $scope.hasMorePosts = false;
+          }
+        })
+        .catch((error) => {
+          console.error("Erro ao buscar posts: ", error);
+          $scope.error = "Não foi possível carregar os posts";
+        })
+        .finally(() => {
+          $scope.loading = false;
+        });
+    };
+
+    var currentSearchTerm = $location.search().search || null;
+
+    // 1. Carga inicial
+    $scope.loadPosts(currentSearchTerm);
+
+    // 2. Ouvinte para MUDANÇAS na URL
+    var deregisterListener = $rootScope.$on("$locationChangeSuccess", function () {
+        var newSearchTerm = $location.search().search || null;
+
+        // Só recarrega se o termo da busca realmente mudou
+        if (newSearchTerm !== currentSearchTerm) {
+            console.log("Termo de busca mudou, recarregando posts...");
+            currentSearchTerm = newSearchTerm;
+            
+            // Reseta o feed antes de carregar os novos posts
+            $scope.posts = [];
+            $scope.cursor = null;
+            $scope.hasMorePosts = true;
+            $scope.loadPosts(currentSearchTerm);
         }
-      }).catch((error) => {
-        console.error("Erro ao buscar posts: ", error);
-        $scope.error = "Não foi possível carregar os posts. Verifique o console para mais detalhes."
-      }).finally(() => {
-        $scope.loading = false;
+    });
+
+    $scope.$on("$destroy", deregisterListener);
+
+    $scope.openEditPostModal = function (postToEdit) {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        templateUrl: "src/views/postModal.html",
+        controller: "PostController",
+        size: "lg",
+        resolve: {
+          postEdit: function () {
+            return postToEdit;
+          },
+        },
+      });
+
+      modalInstance.result.then((updatedPost) => {
+        console.log("Post atualizado com sucesso: ", updatedPost);
+
+        var index = $scope.posts.findIndex((p) => p.id === updatedPost.id);
+        if (index !== -1) {
+          $scope.posts[index] = updatedPost;
+        }
       });
     };
 
-    $scope.loadPosts();
-
     angular.element($window).bind("scroll", function () {
       if (
+        $location.search().search &&
         $window.innerHeight + $window.scrollY >=
         document.body.offsetHeight - 100
       ) {
-        $scope.$apply($scope.loadPosts);
+        $scope.$apply(() => {
+          $scope.loadPosts(null);
+        });
       }
     });
   },

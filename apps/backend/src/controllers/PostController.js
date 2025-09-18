@@ -7,8 +7,9 @@ class PostController {
       const limit = Math.min(parseInt(req.query.limit, 10) || 5, 50);
       const cursor = req.query.cursor || null;
       const currentUserId = req.userId || null;
+      const search = req.query.search || null;
 
-      const response = await PostService.listPosts({ limit, cursor, currentUserId });
+      const response = await PostService.listPosts({ limit, cursor, currentUserId, search });
       return res.json(response);
     } catch (err) {
       console.error(err);

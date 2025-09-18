@@ -1,16 +1,23 @@
-import { Op, literal } from "sequelize";
+import { Op, literal, where as sequelizeWhere, fn as sequelizeFn, col as sequelizeCol } from "sequelize";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
 import sequelize from "../database/index.js";
 import { getCache, setCache, delCache } from "../config/redis.js";
 import { deleteImageFile } from "../utils/fileHelper.js";
 
-
 class PostService {
-  async listPosts({ limit = 5, cursor = null, currentUserId = null }) {
+  async listPosts({
+    limit = 5,
+    cursor = null,
+    currentUserId = null,
+    search = null,
+  }) {
     const backendUrl = process.env.BASE_URL;
 
-    const cacheKey = `posts:cursor-${cursor || "first"}:limit-${limit}`;
+    const searchForCache = search ? search.replace(/\s+/g, "_") : "all";
+    const cacheKey = `posts:search-${searchForCache}:cursor-${
+      cursor || "first"
+    }:limit-${limit}`;
 
     const cached = await getCache(cacheKey);
     if (cached) return cached;
@@ -18,6 +25,21 @@ class PostService {
     const where = {
       post_date: { [Op.ne]: null, [Op.lte]: new Date() },
     };
+
+    if (search) {
+      const searchTermLower = search.toLowerCase();
+
+      where[Op.and] = [
+        // Usamos Op.and para garantir que a busca se aplique junto com outras condições
+        {
+          [Op.or]: [
+            sequelizeWhere(sequelizeFn("LOWER", sequelizeCol("title")), { [Op.like]: `%${searchTermLower}%`,}),
+            sequelizeWhere(sequelizeFn("LOWER", sequelizeCol("text")), { [Op.like]: `%${searchTermLower}%`,}),
+            sequelizeWhere(sequelizeFn("LOWER", sequelizeCol("resume")), { [Op.like]: `%${searchTermLower}%`,}),
+          ],
+        },
+      ];
+    }
 
     // Decodifica cursor
     if (cursor) {
@@ -124,7 +146,7 @@ class PostService {
     await sequelize.transaction(async (t) => {
       const post = await Post.findByPk(postId, { transaction: t });
       if (!post) throw new Error("Esse post não existe.");
-      if (post.user_id !== userId){
+      if (post.user_id !== userId) {
         throw new Error("Requisição não autorizada.");
       }
 

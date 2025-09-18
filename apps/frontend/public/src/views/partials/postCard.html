@@ -25,19 +25,22 @@
             <span class="like-count">{{ post.totalLikes || 0 }}</span>
           </button>
           <span class="comments">294</span>
+          <button class="btn btn-default btn-xs" ng-click="$parent.openEditPostModal(post)">
+            Editar
+          </button>
         </span>
       </div>
     </div>
 
     <div class="post-image" ng-if="post.image">
       <img ng-src="{{post.image}}" alt="{{post.resume}}">
-      </div>
+    </div>
 
-      <div class="post-image" ng-if="!post.image">
-        <div class="image-placeholder">
-          <span>◈</span>
-        </div>
+    <div class="post-image" ng-if="!post.image">
+      <div class="image-placeholder">
+        <span>◈</span>
       </div>
     </div>
   </div>
+</div>
 </div>
