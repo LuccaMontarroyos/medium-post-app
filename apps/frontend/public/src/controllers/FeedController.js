@@ -84,6 +84,27 @@ angular.module("app").controller("FeedController", [
       });
     };
 
+    $scope.removePost = function(postToRemove) {
+      
+      var confirmation = window.confirm('Tem certeza que deseja remover este post? Esta ação não pode ser desfeita.');
+  
+      if (confirmation) {
+          PostService.deletePost(postToRemove.id)
+              .then(function() {
+                  
+                  $scope.posts = $scope.posts.filter(function(post) {
+                      return post.id !== postToRemove.id;
+                  });
+                  console.log('Post removido com sucesso!');
+              })
+              .catch(function(err) {
+                  
+                  console.error('Erro ao remover o post:', err);
+                  window.alert('Não foi possível remover o post. Tente novamente.');
+              });
+      }
+  };
+
     angular.element($window).bind("scroll", function () {
       if (
         $location.search().search &&

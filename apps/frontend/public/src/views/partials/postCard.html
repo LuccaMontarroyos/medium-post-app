@@ -21,13 +21,17 @@
         <span class="post-date">{{ post.post_date | date:'MMM d, yyyy' }}</span>
         <span class="post-stats">
           <button class="like-button" ng-click="toggleLike(post)" ng-class="{'liked': post.isLiked}">
-            <span class="like-icon"></span>
+            <i class="fas fa-heart"></i>
             <span class="like-count">{{ post.totalLikes || 0 }}</span>
           </button>
-          <span class="comments">294</span>
-          <button class="btn btn-default btn-xs" ng-click="$parent.openEditPostModal(post)">
-            Editar
-          </button>
+          <div class="post-actions">
+            <button class="action-btn " ng-if="post.allowEdit" ng-click="onEdit(post)">
+              <i class="fas fa-pencil-alt"></i>
+            </button>
+            <button class="action-btn delete-button" ng-if="post.allowRemove" ng-click="onRemove(post)">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
         </span>
       </div>
     </div>

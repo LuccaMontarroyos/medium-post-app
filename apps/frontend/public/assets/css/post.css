@@ -188,12 +188,8 @@
 }
 
 .post-actions {
-    position: absolute;
-    bottom: 0;
-    right: 0;
     display: flex;
-    align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .action-btn {

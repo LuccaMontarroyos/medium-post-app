@@ -3,6 +3,7 @@ angular.module('app')
     const API = 'http://localhost:3333';
 
     this.getPosts = function(cursor, limit = 5, searchTerm = null) {
+        const token = localStorage.getItem('jwtToken')
         let url = `${API}/posts?&limit=${limit}`
         if (cursor) {
             url+= `&cursor=${cursor}`;
@@ -10,7 +11,9 @@ angular.module('app')
         if (searchTerm) {
             url+= `&search=${encodeURIComponent(searchTerm)}`;
         }
-        return $http.get(url);
+        return $http.get(url, {
+            headers: token ? {Authorization: `Bearer ${token}`} : null
+        });
     };
 
     this.createPost = function(postData) {
@@ -52,6 +55,9 @@ angular.module('app')
     };
 
     this.deletePost = function(postId) {
-        return $http.delete(`${API}/posts/${postId}`);
+        const token = localStorage.getItem('jwtToken');
+        return $http.delete(`${API}/posts/${postId}`, {
+            headers: { Authorization: `Bearer ${token}`}
+        });
     };
 }]);
