@@ -4,11 +4,11 @@
     border: none;
     position: relative;
     display: flex;
+    height: 220px;
     background-color: #fff;
     border: 1px solid #e1e1e1;
     border-radius: 8px;
     overflow: hidden;
-    max-height: 220px;
 }
 
 .post-content-wrapper {
@@ -27,6 +27,7 @@
 }
 
 .post-header {
+    flex-shrink: 0;
     margin-bottom: 8px;
 }
 
@@ -56,8 +57,10 @@
 }
 
 .post-body {
-    margin-bottom: 8px;
     flex-grow: 1;
+    min-height: 0;
+    overflow: hidden;
+    margin-bottom: 8px;
 }
 
 .post-title {
@@ -70,11 +73,17 @@
 }
 
 .post-content {
-    color: #000;
+    color: #555;
     font-size: 16px;
-    line-height: 1.4;
-    margin: 0 0 8px 0;
+    line-height: 1.5;
     font-weight: 400;
+    margin: 0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 
 .post-resume {
@@ -86,12 +95,11 @@
 }
 
 .post-meta {
+    flex-shrink: 0;
+    margin-top: 16px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 16px;
-    margin-top: 8px;
-    font-size: 14px;
-    color: #757575;
 }
 
 .post-date {
@@ -226,19 +234,18 @@
     font-weight: 300;
 }
 
-/* Estilos para o Modal de Edição de Post (novo design) */
 
 .post-editor-modal {
     background-color: #fff;
-    width: 100vw; /* Ocupa a largura total da viewport */
-    height: 100vh; /* Ocupa a altura total da viewport */
+    width: 100vw;
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    position: fixed; /* Fixa o modal na tela */
+    position: fixed;
     top: 0;
     left: 0;
-    z-index: 1050; /* Deve estar acima de tudo, inclusive do backdrop do ui-bootstrap */
-    overflow: hidden; /* Garante que o conteúdo não vaze */
+    z-index: 1050;
+    overflow: hidden;
 }
 
 .editor-header {
@@ -249,7 +256,7 @@
     border-bottom: 1px solid #eee;
     background-color: #fff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    min-height: 60px; /* Altura mínima para o header */
+    min-height: 60px;
 }
 
 .editor-logo .brand-link {
@@ -273,7 +280,7 @@
 }
 
 .editor-status {
-    flex-grow: 1; /* Ocupa o espaço restante */
+    flex-grow: 1;
     text-align: left;
     margin-left: 20px;
     font-size: 14px;
@@ -296,7 +303,7 @@
 }
 
 .publish-btn {
-    background: #1a8917; /* Verde da referência */
+    background: #1a8917;
     color: #fff;
     border: none;
     padding: 8px 18px;
@@ -312,7 +319,7 @@
 }
 
 .publish-btn:disabled {
-    background: #a9d2a8; /* Um verde mais claro para o estado desabilitado */
+    background: #a9d2a8;
     cursor: not-allowed;
 }
 
@@ -346,20 +353,20 @@
 }
 
 .editor-body {
-    flex-grow: 1; /* Ocupa o restante da altura */
-    padding: 30px 10%; /* Ajuste o padding horizontal para simular a largura da coluna de texto */
-    overflow-y: auto; /* Permite scroll se o conteúdo for muito longo */
-    background-color: #fcfcfc; /* Um fundo levemente diferente para o corpo do editor */
+    flex-grow: 1;
+    padding: 30px 10%;
+    overflow-y: auto;
+    background-color: #fcfcfc;
 }
 
 .editor-body form {
-    max-width: 700px; /* Limita a largura do formulário para centralizar o texto */
+    max-width: 700px;
     margin: 0 auto;
 }
 
 .editor-title-input {
-    font-family: 'Georgia', serif; /* Fontes que se assemelham ao design */
-    font-size: 40px; /* Grande como na referência */
+    font-family: 'Georgia', serif;
+    font-size: 40px;
     font-weight: bold;
     line-height: 1.2;
     padding: 10px 0;
@@ -367,26 +374,26 @@
     outline: none;
     width: 100%;
     box-shadow: none;
-    resize: none; /* Desabilita redimensionamento para textareas, se aplicar */
+    resize: none;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
 }
 
 .editor-title-input::placeholder {
-    color: #b0b0b0; /* Cor do placeholder "Title" */
+    color: #b0b0b0;
 }
 
 .editor-content-input {
-    font-family: 'Open Sans', sans-serif; /* Fonte para o corpo do texto */
+    font-family: 'Open Sans', sans-serif;
     font-size: 20px;
     line-height: 1.6;
     padding: 10px 0;
     border: none;
     outline: none;
     width: 100%;
-    min-height: calc(100vh - 200px); /* Ajusta altura mínima para ocupar mais espaço */
-    resize: none; /* Desabilita redimensionamento */
+    min-height: calc(100vh - 200px);
+    resize: none;
     box-shadow: none;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
@@ -394,22 +401,20 @@
 }
 
 .editor-content-input::placeholder {
-    color: #b0b0b0; /* Cor do placeholder "Tell your story..." */
+    color: #b0b0b0;
 }
-
-/* src/styles/post-editor.css (adição) */
 
 .editor-summary-input {
     font-family: 'Open Sans', sans-serif;
-    font-size: 16px; /* Um pouco menor que o conteúdo principal */
+    font-size: 16px;
     line-height: 1.5;
     color: #555;
     padding: 10px;
-    border: 1px solid #ddd; /* Adicionamos uma borda para diferenciá-lo */
+    border: 1px solid #ddd;
     border-radius: 4px;
     outline: none;
     width: 100%;
-    resize: vertical; /* Permite redimensionar verticalmente */
+    resize: vertical;
     box-shadow: none;
     transition: border-color 0.2s ease;
 }
@@ -418,14 +423,12 @@
     border-color: #000;
 }
 
-/* src/styles/post-editor.css (adições) */
 
-/* Esconde o input de arquivo padrão, que é feio */
 input[type="file"] {
     display: none;
 }
 
-/* Estilo para o nosso botão customizado */
+
 .custom-file-upload {
     border: 1px dashed #ccc;
     display: inline-block;
@@ -439,7 +442,7 @@ input[type="file"] {
     background-color: #f9f9f9;
 }
 
-/* Contêiner da pré-visualização */
+
 .image-preview-container {
     position: relative;
     margin-bottom: 20px;
@@ -452,7 +455,7 @@ input[type="file"] {
     border-radius: 8px;
 }
 
-/* Botão para remover a imagem */
+
 .remove-image-btn {
     position: absolute;
     top: 10px;
@@ -467,4 +470,24 @@ input[type="file"] {
     cursor: pointer;
     line-height: 30px;
     text-align: center;
+}
+
+#create-post-form .post-title-input,
+#create-post-form .post-content-input {
+    border: none;
+    box-shadow: none;
+    outline: none;
+    width: 100%;
+}
+
+#create-post-form .post-title-input {
+    font-size: 2.5em;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+#create-post-form .post-content-input {
+    font-size: 1.2em;
+    line-height: 1.6;
+    padding: 10px 0;
 }

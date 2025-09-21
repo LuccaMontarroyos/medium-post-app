@@ -20,7 +20,7 @@
       <div class="post-meta">
         <span class="post-date">{{ post.post_date | date:'MMM d, yyyy' }}</span>
         <span class="post-stats">
-          <button class="like-button" ng-click="toggleLike(post)" ng-class="{'liked': post.isLiked}">
+          <button class="like-button" ng-click="$parent.toggleLike(post)" ng-class="{'liked': post.isLikedByUser}" ng-disable="!$parent.isUserLoggedIn">
             <i class="fas fa-heart"></i>
             <span class="like-count">{{ post.totalLikes || 0 }}</span>
           </button>

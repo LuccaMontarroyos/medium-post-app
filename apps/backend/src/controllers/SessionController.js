@@ -8,7 +8,7 @@ class SessionController {
       const result = await AuthService.login(email, password);
       return res.json(result);
     } catch (error) {
-      // Define status 401 para erros de autenticação
+      
       const status =
         error.message === "Usuário não existe." || error.message === "Senha inválida."
           ? 401

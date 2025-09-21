@@ -4,19 +4,19 @@ import authConfig from "../config/auth.js";
 
 class AuthService {
   static async login(email, password) {
-    // Busca usuário pelo email
+
     const user = await User.findOne({ where: { email } });
     if (!user) {
       throw new Error("Usuário não existe.");
     }
 
-    // Verifica senha
+    
     const passwordValid = await user.checkPassword(password);
     if (!passwordValid) {
       throw new Error("Senha inválida.");
     }
 
-    // Gera token JWT
+    
     const token = jwt.sign({ id: user.id, name: user.name, email: user.email }, authConfig.secret, {
       expiresIn: authConfig.expiresIn,
     });

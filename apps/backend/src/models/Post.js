@@ -15,6 +15,12 @@ class Post extends Model {
     
     static associate(models) {
         this.belongsTo(models.User, {foreignKey: 'user_id', as: 'users' });
+        this.hasMany(models.PostLike, {
+            foreignKey: 'post_id',
+            as: 'likes',
+            onDelete: 'CASCADE',
+            hooks: true,
+        })
     }
 }
 

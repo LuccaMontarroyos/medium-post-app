@@ -1,11 +1,11 @@
-// src/config/multer.js
+
 import multer from "multer";
 import path from "path";
 import fs from "fs";
 
 const uploadFolder = path.resolve(process.cwd(), "uploads", "posts");
 
-// cria a pasta (recursivamente) se não existir
+
 fs.mkdirSync(uploadFolder, { recursive: true });
 
 const storage = multer.diskStorage({
@@ -30,5 +30,5 @@ const fileFilter = (req, file, cb) => {
 export const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 },
 });

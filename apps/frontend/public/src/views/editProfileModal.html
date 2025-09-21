@@ -1,0 +1,82 @@
+<div class="edit-profile-modal">
+    <div class="modal-header">
+        <h3 class="modal-title">Edit Profile</h3>
+        <button type="button" class="close-editor-btn" ng-click="cancel()">×</button>
+    </div>
+
+    <div class="profile-modal">
+        <form name="profileForm" novalidate>
+
+            <div class="profile-field">
+                <label>Name</label>
+                <div class="field-value-wrapper">
+
+                    <span ng-show="!isEditing.name">{{ userCopy.name }}</span>
+
+                    <input type="text" class="form-control" ng-show="isEditing.name" ng-model="userCopy.name" required>
+                    <button class="edit-icon-btn" ng-click="toggleEdit('name')">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="profile-field">
+                <label>Email</label>
+                <div class="field-value-wrapper">
+                    <span ng-show="!isEditing.email">{{ userCopy.email }}</span>
+                    <input type="email" class="form-control" ng-show="isEditing.email" ng-model="userCopy.email"
+                        required>
+                    <button class="edit-icon-btn" ng-click="toggleEdit('email')">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+
+            <button class="password-btn" ng-click="togglePasswordFields()" ng-if="!showPasswordFields">
+                Change password
+            </button>
+
+
+            <div class="password-section" ng-if="showPasswordFields">
+                <hr>
+                <h4>Change Password</h4>
+
+                <div class="form-group password-input-wrapper">
+                    <input name="oldPassword" ng-model="passwords.oldPassword" type="{{passwordFieldTypes.old}}"
+                        class="form-control" placeholder="Senha antiga" required>
+                    <i class="fas" ng-class="passwordFieldTypes.old === 'password' ? 'fa-eye' : 'fa-eye-slash'"
+                        ng-click="togglePasswordVisibility('old')"></i>
+                </div>
+
+                <div class="form-group password-input-wrapper">
+                    <input name="newPassword" ng-model="passwords.newPassword" type="{{passwordFieldTypes.new}}"
+                        class="form-control" placeholder="Nova senha" required>
+                    <i class="fas" ng-class="passwordFieldTypes.new === 'password' ? 'fa-eye' : 'fa-eye-slash'"
+                        ng-click="togglePasswordVisibility('new')"></i>
+                </div>
+
+                <div class="form-group password-input-wrapper">
+                    <input name="confirmPassword" ng-model="passwords.confirmPassword"
+                        type="{{passwordFieldTypes.confirm}}" class="form-control" placeholder="Confirmar nova senha"
+                        required>
+                    <i class="fas" ng-class="passwordFieldTypes.confirm === 'password' ? 'fa-eye' : 'fa-eye-slash'"
+                        ng-click="togglePasswordVisibility('confirm')"></i>
+                </div>
+            </div>
+
+
+            <div ng-if="error" class="alert alert-danger mt-3">{{ error }}</div>
+
+            <div ng-if="success" class="alert alert-success mt-3">{{ success }}</div>
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button class="save-btn" ng-click="save()" ng-disabled="isSaving">
+            {{ isSaving ? 'Saving...' : 'Save Changes' }}
+        </button>
+        <button class="cancel-btn" ng-click="cancel()">Cancel</button>
+    </div>
+</div>

@@ -10,7 +10,7 @@ angular.module('app').controller('ModalLoginController', [
         AuthService.login($scope.user)
           .then(function(res) {
             $scope.loading = false;
-            $uibModalInstance.close(res.data); // fecha modal e retorna usuário
+            $uibModalInstance.close(res.data);
           })
           .catch(function(err) {
             $scope.loading = false;
@@ -24,7 +24,6 @@ angular.module('app').controller('ModalLoginController', [
       };
   
       $scope.closeModal = function() {
-        console.log('caindo aqui');
         $uibModalInstance.dismiss('cancel');
       };
     }

@@ -21,6 +21,12 @@ class PostController {
   async store(req, res) {
     try {
       const imagePath = req.file ? `/uploads/posts/${req.file.filename}` : null;
+      const dataToSave = { 
+        userId: req.userId, 
+        ...req.body, 
+        image: imagePath 
+    };
+    
       const post = await PostService.createPost({ userId: req.userId, ...req.body, image: imagePath, });
       return res.json(post);
     } catch (error) {

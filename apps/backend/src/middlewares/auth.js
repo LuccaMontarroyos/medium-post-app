@@ -1,25 +1,32 @@
 import jwt from "jsonwebtoken";
 import authConfig from "../config/auth.js";
-import { promisify }from "util"
+import { promisify } from "util";
 
 export default async (req, res, next) => {
-    const authHeader = req.headers.authorization;
+  const authHeader = req.headers.authorization;
 
-    if (!authHeader) {
-        return res.status(401).json({ error: "Token não existe."})
-    }
+  if (!authHeader) {
+    
+    return res.status(401).json({ error: "Token não fornecido." });
+  }
 
-    const [, token] = authHeader.split(' ');
+  if (!authHeader) {
+    return res.status(401).json({ error: "Token não existe." });
+  }
 
-    try {
-        const decoded = await promisify(jwt.verify)(token, authConfig.secret);
+  const [, token] = authHeader.split(" ");
 
-        req.userId = decoded.id;
+  try {
+    const decoded = await promisify(jwt.verify)(token, authConfig.secret);
 
-        return next();
-    } catch (error) {
-        return res.status(401).json({ error: "Token inválido."})
-    }
+    req.userId = decoded.id;
 
+    
     return next();
-}
+  } catch (error) {
+    
+    return res.status(401).json({ error: "Token inválido." });
+  }
+
+  return next();
+};

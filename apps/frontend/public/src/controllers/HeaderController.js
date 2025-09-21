@@ -4,22 +4,41 @@ angular.module("app").controller("HeaderController", [
   "AuthService",
   "$window",
   "$location",
-  function ($scope, $uibModal, AuthService, $window, $location) {
+  "$document",
+  function ($scope, $uibModal, AuthService, $window, $location, $document) {
     $scope.isLoggedIn = AuthService.isAuthenticated();
     $scope.user = $scope.isLoggedIn ? jwt_decode(AuthService.getToken()) : null;
     $scope.search = {
       query: $location.search().search || "",
     };
+    $scope.showUserMenu = false;
 
     $scope.performSearch = function () {
       if ($scope.search.query) {
-        // Modifica o parâmetro 'search' na URL
+
         $location.search("search", $scope.search.query);
       } else {
-        // Se a busca estiver vazia, remove o parâmetro da URL
+
         $location.search("search", null);
       }
     };
+
+    $scope.toggleUserMenu = function (event) {
+      event.stopPropagation();
+      $scope.showUserMenu = !$scope.showUserMenu;
+    }
+
+    $document.on("click", function() {
+      if ($scope.showUserMenu) {
+        $scope.$apply(function() {
+          $scope.showUserMenu = false;
+        })
+      }
+    })
+
+    $scope.$on('$destroy', function() {
+      $document.off('click');
+    })
 
     $scope.logout = function () {
       AuthService.logout();
@@ -38,14 +57,14 @@ angular.module("app").controller("HeaderController", [
       });
 
       modalInstance.result
-        .then(function (result) {
-          // O modal de login foi fechado com sucesso (usuário logou)
+        .then((result) => {
+          
           if (result && result.token) {
             $scope.loginSuccess(result.token);
           }
         })
-        .catch(function (reason) {
-          console.log("Modal de login dispensado:", reason);
+        .catch((reason) => {
+          console.error("Modal de login dispensado:", reason);
         });
     };
 
@@ -54,7 +73,7 @@ angular.module("app").controller("HeaderController", [
         templateUrl: "src/views/register.html",
         controller: "ModalRegisterController",
         resolve: {
-          // Permite que o modal de registro possa chamar a função de abrir o de login
+          
           switchModal: function () {
             return $scope.openLoginModal;
           },
@@ -62,14 +81,14 @@ angular.module("app").controller("HeaderController", [
       });
 
       modalInstance.result
-        .then(function (result) {
-          // O modal de registro foi fechado com sucesso (usuário registrou e logou)
+        .then((result) => {
+          
           if (result && result.token) {
             $scope.registerSuccess(result.token);
           }
         })
-        .catch(function (reason) {
-          console.log("Modal de registro dispensado:", reason);
+        .catch((reason) => {
+          console.error("Modal de registro dispensado:", reason);
         });
     };
 
@@ -88,8 +107,8 @@ angular.module("app").controller("HeaderController", [
     $scope.openCreatePostModal = function () {
       var modalInstance = $uibModal.open({
         animation: true,
-        templateUrl: "src/views/postModal.html", // O HTML do nosso modal
-        controller: "PostController", // O controller do nosso modal
+        templateUrl: "src/views/postModal.html",
+        controller: "PostController",
         size: "lg",
         resolve: {
           postEdit: function () {
@@ -98,25 +117,34 @@ angular.module("app").controller("HeaderController", [
         },
       });
 
-      // O modal retorna uma "promessa". O .then() é executado quando o modal é fechado com sucesso.
+      
       modalInstance.result
         .then(
           function (newPost) {
-            // 'newPost' é o dado que o PostController nos enviou ao fechar.
-            console.log("Post criado com sucesso:", newPost);
-
-            // Ação simples: Recarrega a página para ver o novo post no feed.
-            // Uma solução mais avançada seria adicionar o post ao topo do feed sem reload.
             $window.location.reload();
-          },
-          function () {
-            // Esta função é chamada se o modal for dispensado (clicando fora ou no botão 'cancelar')
-            console.log("Modal dispensado.");
           }
         )
         .catch(function (reason) {
-          console.log("Modal de criação de post dispensado:", reason);
+          console.error("Modal de criação de post dispensado:", reason);
         });
+    };
+
+    $scope.openEditProfileModal = function() {
+      var modalInstance = $uibModal.open({
+        templateUrl: 'src/views/editProfileModal.html',
+        controller: 'EditProfileController',
+        size: 'lg',
+        windowClass: 'custom-profile-modal',
+        resolve: {
+          userEdit: function() {
+            return $scope.user;
+          }
+        }
+      });
+
+      modalInstance.result.then((updatedUser) => {
+        $window.location.reload();
+      });
     };
   },
 ]);

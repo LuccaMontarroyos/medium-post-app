@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 
 dotenv.config();
-// const dotenv = require('dotenv').config();
 
 export default {
     dialect: process.env.DB_DIALECT,

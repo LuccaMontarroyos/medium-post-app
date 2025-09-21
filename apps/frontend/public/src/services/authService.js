@@ -1,6 +1,8 @@
+import { APP_CONFIG } from "../config/env";
+
 angular.module('app')
 .service('AuthService', ['$http', function($http) {
-    const API = 'http://localhost:3333';
+    const API = APP_CONFIG.API_URL;
 
     this.login = function(credentials) {
         return $http.post(`${API}/login`, credentials);
@@ -23,6 +25,29 @@ angular.module('app')
     }
 
     this.isAuthenticated = function() {
-        return !!localStorage.getItem('jwtToken');
+        const token = this.getToken();
+        if (!token) {
+            return false;
+        }
+        try {
+            const decodedToken = jwt_decode(token);
+            
+            const expirationDate = new Date(decodedToken.exp * 1000);
+            const now = new Date();
+            
+            
+            if (expirationDate < now) {
+                console.log("Token expirado.");
+                this.logout();
+                return false;
+            }
+
+            return true;
+        } catch (e) {
+         
+            console.error("Token inválido (erro ao decodificar).", e);
+            this.logout();
+            return false;
+        }
     }
 }])

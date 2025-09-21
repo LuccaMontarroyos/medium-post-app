@@ -11,6 +11,7 @@ angular.module('app').controller('ModalRegisterController', [
           .then(function(res) {
             $scope.loading = false;
             $uibModalInstance.close(res.data);
+            switchModal();
           })
           .catch(function(err) {
             $scope.loading = false;

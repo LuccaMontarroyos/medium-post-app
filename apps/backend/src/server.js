@@ -1,5 +1,5 @@
 import app from "./app.js";
 
-app.listen(3333, () => {
-    console.log("servidor rodando na porta 3333");
+app.listen(process.env.BACKEND_PORT, () => {
+    console.log(`servidor rodando na porta ${process.env.BACKEND_PORT}`);
 });

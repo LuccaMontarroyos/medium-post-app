@@ -14,7 +14,7 @@ export default class SchemaValidator {
         abortEarly: false,
         stripUnknown: true,
       });
-      const filter = req.query; // se quiser validar query params também
+      const filter = req.query;
       return { error: null, results: { data, filter } };
     } catch (err) {
       const error = err.inner?.[0] || err;
@@ -25,13 +25,13 @@ export default class SchemaValidator {
   static validate(schema) {
     return async (req, res, next) => {
       try {
-        // validação do Yup
+        
         const results = await schema.validate(req.body, {
           abortEarly: false,
           stripUnknown: true,
         });
 
-        // remove undefined
+        
         req.data = pickBy(results, (value) => value !== undefined);
 
         return next();
@@ -40,7 +40,7 @@ export default class SchemaValidator {
           return res.status(400).json({
             status: "error",
             type_error: "VALIDATION_ERROR",
-            // pega apenas a primeira mensagem de erro
+        
             message:
               err.errors[0] || "Houve um erro, tente novamente em breve.",
           });

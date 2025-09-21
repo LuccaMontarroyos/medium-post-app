@@ -16,14 +16,14 @@ export const userUpdateSchema = Yup.object().shape({
     .min(6)
     .notRequired()
     .when("oldPassword", {
-      is: (val) => !!val, // só exige se oldPassword tiver algum valor
+      is: (val) => !!val,
       then: (field) => field.required("Nova senha obrigatória"),
       otherwise: (field) => field.notRequired(),
     }),
   confirmPassword: Yup.string()
     .notRequired()
     .when("password", {
-      is: (val) => !!val, // só exige se password tiver algum valor
+      is: (val) => !!val,
       then: (field) =>
         field
           .required("Confirmação de senha obrigatória")

@@ -1,5 +1,8 @@
 angular.module("app")
-.config(function($routeProvider) {
+.config(function($routeProvider, $httpProvider) {
+    
+    $httpProvider.interceptors.push('AuthInterceptor');
+
     $routeProvider
         .when("/", {
             templateUrl: "src/views/home.html",

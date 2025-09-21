@@ -24,15 +24,6 @@
             <input type="password" ng-model="user.password" class="form-input" placeholder="Enter your password" required>
           </div>
 
-          <div class="form-options">
-            <label class="checkbox-container">
-              <input type="checkbox">
-              <span class="checkmark"></span>
-              Remember me
-            </label>
-            <a href="#" class="forgot-link">Forgot password?</a>
-          </div>
-
           <button type="submit" class="submit-btn" ng-disabled="loading">
             <span ng-if="!loading">Sign in</span>
             <span ng-if="loading" class="loading-spinner">⟳</span>

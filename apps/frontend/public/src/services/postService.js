@@ -1,6 +1,8 @@
+import { APP_CONFIG } from "../config/env";
+
 angular.module('app')
 .service('PostService', ['$http', 'AuthService', function($http, AuthService) {
-    const API = 'http://localhost:3333';
+    const API = APP_CONFIG.API_URL;
 
     this.getPosts = function(cursor, limit = 5, searchTerm = null) {
         const token = localStorage.getItem('jwtToken')
@@ -22,7 +24,6 @@ angular.module('app')
         fd.append('title', postData.title);
         fd.append('text', postData.text);
         fd.append('resume', postData.resume);
-        fd.append('title', postData.title);
 
         if (postData.imageFile) {
             fd.append('image', postData.imageFile, postData.imageFile.name);
@@ -30,7 +31,10 @@ angular.module('app')
         const token = localStorage.getItem('jwtToken');
         return $http.post(`${API}/posts`, fd, {
             transformRequest: angular.identity,
-            headers: { Authorization: `Bearer ${token}`}
+            headers: { 
+                'Content-Type': undefined,
+                'Authorization': `Bearer ${token}`
+            }
         });
     };
 

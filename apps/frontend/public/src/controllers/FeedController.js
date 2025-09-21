@@ -1,20 +1,22 @@
 angular.module("app").controller("FeedController", [
   "$scope",
   "PostService",
+  "AuthService",
   "$window",
   "$uibModal",
   "$location",
   "$rootScope",
-  function ($scope, PostService, $window, $uibModal, $location, $rootScope) {
+  function ($scope, PostService, AuthService, $window, $uibModal, $location, $rootScope) {
     $scope.posts = [];
     $scope.loading = false;
     $scope.cursor = null;
     $scope.error = null;
     $scope.hasMorePosts = true;
+    $scope.isUserLoggedIn = AuthService.isAuthenticated();
 
     $scope.loadPosts = function (searchTerm) {
       if ($scope.loading || !$scope.hasMorePosts) return;
-      
+
       $scope.loading = true;
       $scope.error = null;
 
@@ -39,25 +41,28 @@ angular.module("app").controller("FeedController", [
 
     var currentSearchTerm = $location.search().search || null;
 
-    // 1. Carga inicial
+
     $scope.loadPosts(currentSearchTerm);
 
-    // 2. Ouvinte para MUDANÇAS na URL
-    var deregisterListener = $rootScope.$on("$locationChangeSuccess", function () {
+
+    var deregisterListener = $rootScope.$on(
+      "$locationChangeSuccess",
+      function () {
         var newSearchTerm = $location.search().search || null;
 
-        // Só recarrega se o termo da busca realmente mudou
+
         if (newSearchTerm !== currentSearchTerm) {
-            console.log("Termo de busca mudou, recarregando posts...");
-            currentSearchTerm = newSearchTerm;
-            
-            // Reseta o feed antes de carregar os novos posts
-            $scope.posts = [];
-            $scope.cursor = null;
-            $scope.hasMorePosts = true;
-            $scope.loadPosts(currentSearchTerm);
+          
+          currentSearchTerm = newSearchTerm;
+
+
+          $scope.posts = [];
+          $scope.cursor = null;
+          $scope.hasMorePosts = true;
+          $scope.loadPosts(currentSearchTerm);
         }
-    });
+      }
+    );
 
     $scope.$on("$destroy", deregisterListener);
 
@@ -75,7 +80,7 @@ angular.module("app").controller("FeedController", [
       });
 
       modalInstance.result.then((updatedPost) => {
-        console.log("Post atualizado com sucesso: ", updatedPost);
+        
 
         var index = $scope.posts.findIndex((p) => p.id === updatedPost.id);
         if (index !== -1) {
@@ -84,32 +89,63 @@ angular.module("app").controller("FeedController", [
       });
     };
 
-    $scope.removePost = function(postToRemove) {
-      
-      var confirmation = window.confirm('Tem certeza que deseja remover este post? Esta ação não pode ser desfeita.');
-  
+    $scope.removePost = function (postToRemove) {
+      var confirmation = window.confirm(
+        "Tem certeza que deseja remover este post? Esta ação não pode ser desfeita."
+      );
+
       if (confirmation) {
-          PostService.deletePost(postToRemove.id)
-              .then(function() {
-                  
-                  $scope.posts = $scope.posts.filter(function(post) {
-                      return post.id !== postToRemove.id;
-                  });
-                  console.log('Post removido com sucesso!');
-              })
-              .catch(function(err) {
-                  
-                  console.error('Erro ao remover o post:', err);
-                  window.alert('Não foi possível remover o post. Tente novamente.');
-              });
+        PostService.deletePost(postToRemove.id)
+          .then(function () {
+            $scope.posts = $scope.posts.filter(function (post) {
+              return post.id !== postToRemove.id;
+            });
+        
+          })
+          .catch(function (err) {
+            console.error("Erro ao remover o post:", err);
+            window.alert("Não foi possível remover o post. Tente novamente.");
+          });
       }
-  };
+    };
+
+    $scope.toggleLike = function (post) {
+
+      if (!$scope.isUserLoggedIn) {
+        alert('Você precisa estar registrado para curtir o post');
+        return;
+      }
+      
+      const originalLikedState = post.isLikedByUser;
+      const originalLikesCount = post.totalLikes;
+
+
+      post.isLikedByUser = !post.isLikedByUser;
+      if (post.isLikedByUser) {
+        post.totalLikes++;
+      } else {
+        post.totalLikes--;
+      }
+
+      PostService.likePost(post.id)
+        .then(function (response) {
+          post.isLikedByUser = response.data.liked;
+        
+        })
+        .catch(function (err) {
+          
+          console.error("Erro ao processar o like:", err);
+          post.isLikedByUser = originalLikedState;
+          post.totalLikes = originalLikesCount;
+          window.alert("Não foi possível registrar seu like. Tente novamente.");
+        });
+    };
 
     angular.element($window).bind("scroll", function () {
       if (
         $location.search().search &&
         $window.innerHeight + $window.scrollY >=
-        document.body.offsetHeight - 100
+          document.body.offsetHeight - 100
       ) {
         $scope.$apply(() => {
           $scope.loadPosts(null);

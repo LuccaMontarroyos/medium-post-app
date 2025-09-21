@@ -24,15 +24,11 @@
       </button>
 
       <div class="user-menu" ng-if="isLoggedIn">
-        <button class="notification-btn">
-          <span class="notification-icon">◉</span>
-        </button>
-        <div class="user-avatar" ng-click="toggleUserMenu()">
+        <div class="user-avatar" ng-click="toggleUserMenu($event)">
           <span>{{user.name.charAt(0).toUpperCase()}}</span>
         </div>
         <div class="user-dropdown" ng-show="showUserMenu">
-          <a href="#" class="dropdown-item">Profile</a>
-          <a href="#" class="dropdown-item">Settings</a>
+          <a href="#" class="dropdown-item" ng-click="openEditProfileModal()">Profile</a>
           <hr class="dropdown-divider">
           <a href="#" class="dropdown-item" ng-click="logout()">Sign out</a>
         </div>

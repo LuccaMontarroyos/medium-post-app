@@ -1,0 +1,145 @@
+.edit-profile-modal {
+    background-color: #fff;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    overflow: hidden;
+    scroll-behavior: none;
+}
+
+.profile-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.edit-profile-modal .profile-field {
+    margin-bottom: 20px;
+}
+
+.edit-profile-modal .profile-field label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.edit-profile-modal .field-value-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+
+.edit-profile-modal .field-value-wrapper span {
+    flex-grow: 1;
+    font-size: 16px;
+}
+
+.edit-profile-modal .field-value-wrapper input {
+    flex-grow: 1;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    height: auto;
+}
+.edit-profile-modal .field-value-wrapper input:focus {
+    box-shadow: none;
+}
+
+
+.edit-profile-modal .edit-icon-btn {
+    background: none;
+    border: none;
+    color: #000;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.edit-icon-btn:hover {
+    color: #555;
+}
+
+.edit-profile-modal .password-section {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.edit-profile-modal .password-input-wrapper {
+    position: relative;
+}
+
+.edit-profile-modal .password-input-wrapper i {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #aaa;
+}
+
+.password-btn {
+    background: black;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+  }
+
+  .password-btn:hover {
+    background: #f5f5f5;
+    color: #000;
+  }
+
+  .save-btn {
+    background: #000;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+  }
+
+  .save-btn:hover {
+    background: #f5f5f5;
+    color: #000;
+    border: 1px solid #000;
+  }
+
+  .cancel-btn {
+    background: #f5f5f5;
+    border: none;
+    color: #000;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+  }
+
+  .cancel-btn:hover {
+    background: #555;
+    color: #fff;
+    
+  }
+
+  .form-control {
+    padding: 10px 5px;
+    margin-bottom: 10px;
+    font-size: 12px;
+  }
+

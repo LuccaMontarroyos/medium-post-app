@@ -1,3 +1,7 @@
+body.modal-open {
+  overflow: hidden;
+}
+
 .feed {
     max-width: 680px;
     margin: 0 auto;

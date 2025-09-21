@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, json as jsonParser } from "express";
 import { upload } from "../config/multer.js";
 
 import PostController from "../controllers/PostController.js";
@@ -17,17 +17,17 @@ import requireImage from "../middlewares/requireImage.js";
 
 const routes = new Router();
 
-routes.post("/login", SessionController.store);
-routes.post("/users", SchemaValidator.validate(userCreateSchema), UserController.store);
+routes.post("/login", jsonParser(), SessionController.store);
+routes.post("/users", jsonParser(), SchemaValidator.validate(userCreateSchema), UserController.store);
 
 routes.get("/posts", optionalAuthMiddleware, PostController.index);
 
 routes.use(authMiddleware);
 
-routes.put("/users", SchemaValidator.validate(userUpdateSchema), UserController.update);
+routes.put("/users", jsonParser(), SchemaValidator.validate(userUpdateSchema), UserController.update);
 
 routes.post("/posts", upload.single("image"), requireImage, SchemaValidator.validate(postCreateSchema), PostController.store);
-routes.put("/posts/:post_id", PostController.update);
+routes.put("/posts/:post_id", jsonParser(), PostController.update);
 routes.delete("/posts/:post_id", PostController.destroy);
 
 routes.post("/posts/:post_id/like", LikeController.toggle);

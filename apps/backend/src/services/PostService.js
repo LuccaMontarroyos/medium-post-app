@@ -1,4 +1,10 @@
-import { Op, literal, where as sequelizeWhere, fn as sequelizeFn, col as sequelizeCol } from "sequelize";
+import {
+  Op,
+  literal,
+  where as sequelizeWhere,
+  fn as sequelizeFn,
+  col as sequelizeCol,
+} from "sequelize";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
 import sequelize from "../database/index.js";
@@ -30,18 +36,24 @@ class PostService {
       const searchTermLower = search.toLowerCase();
 
       where[Op.and] = [
-        // Usamos Op.and para garantir que a busca se aplique junto com outras condições
+        
         {
           [Op.or]: [
-            sequelizeWhere(sequelizeFn("LOWER", sequelizeCol("title")), { [Op.like]: `%${searchTermLower}%`,}),
-            sequelizeWhere(sequelizeFn("LOWER", sequelizeCol("text")), { [Op.like]: `%${searchTermLower}%`,}),
-            sequelizeWhere(sequelizeFn("LOWER", sequelizeCol("resume")), { [Op.like]: `%${searchTermLower}%`,}),
+            sequelizeWhere(sequelizeFn("LOWER", sequelizeCol("title")), {
+              [Op.like]: `%${searchTermLower}%`,
+            }),
+            sequelizeWhere(sequelizeFn("LOWER", sequelizeCol("text")), {
+              [Op.like]: `%${searchTermLower}%`,
+            }),
+            sequelizeWhere(sequelizeFn("LOWER", sequelizeCol("resume")), {
+              [Op.like]: `%${searchTermLower}%`,
+            }),
           ],
         },
       ];
     }
 
-    // Decodifica cursor
+    
     if (cursor) {
       const decoded = Buffer.from(cursor, "base64").toString("utf8");
       const [dateStr, idStr] = decoded.split("_");
@@ -60,20 +72,21 @@ class PostService {
 
     const attributesToInclude = [
       [
-          literal(`(SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.is_deleted = false)`),
-          "totalLikes",
+        literal(
+          `(SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.is_deleted = false)`
+        ),
+        "totalLikes",
       ],
-  ];
+    ];
 
-  
-  if (currentUserId) {
+    if (currentUserId) {
       attributesToInclude.push([
-          literal(
-              `(SELECT EXISTS (SELECT 1 FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.user_id = ${currentUserId} AND pl.is_deleted = false))`
-          ),
-          "isLikedByUser",
+        literal(
+          `(SELECT EXISTS (SELECT 1 FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.user_id = ${currentUserId} AND pl.is_deleted = false))`
+        ),
+        "isLikedByUser",
       ]);
-  }
+    }
 
     const posts = await Post.findAll({
       where,
@@ -161,8 +174,8 @@ class PostService {
         throw new Error("Requisição não autorizada.");
       }
 
-      await deleteImageFile(post.image);
       await post.destroy({ transaction: t });
+      await deleteImageFile(post.image);
     });
 
     await delCache("posts:*");

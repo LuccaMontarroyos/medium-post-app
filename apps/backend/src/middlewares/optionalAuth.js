@@ -1,11 +1,10 @@
-// middlewares/optionalAuth.js
 import jwt from "jsonwebtoken";
 
 export default async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    req.userId = null; // usuário não autenticado
+    req.userId = null;
     return next();
   }
 
@@ -20,7 +19,7 @@ export default async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = decoded.id;
   } catch (err) {
-    req.userId = null; // token inválido, mas não bloqueia
+    req.userId = null;
   }
 
   return next();

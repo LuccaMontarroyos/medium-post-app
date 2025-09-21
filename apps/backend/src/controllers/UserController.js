@@ -16,7 +16,7 @@ class UserController {
     }
   }
 
-  async update(req, res) {
+  async update(req, res) {  
     try {
       const user = await UserService.updateUser(req.userId, req.body);
       const { id, name, email } = user;
@@ -25,7 +25,7 @@ class UserController {
       console.error(error);
 
       let status = 400;
-      if (error.message === "Senha incorreta.") status = 401;
+      if (error.message === "Senha incorreta.") status = 403;
 
       return res.status(status).json({ error: error.message });
     }

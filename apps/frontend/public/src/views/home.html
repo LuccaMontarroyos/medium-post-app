@@ -3,7 +3,7 @@
     <div ng-if="error">{{ error }}</div>
   
     <div class="feed">
-      <post-card ng-repeat="post in posts" post="post" on-edit="openEditPostModal(post)" on-remove="removePost(post)"></post-card>
+      <post-card ng-repeat="post in posts" post="post" on-edit="openEditPostModal(post)" on-remove="removePost(post)" on-toggle-like="toggleLike(post)"></post-card>
     </div>
   </div>
   
