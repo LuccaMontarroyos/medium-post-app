@@ -8,7 +8,6 @@
 - [Como Rodar a Aplicação](#-como-rodar-a-aplicação)
 - [Estrutura do Projeto](#-estrutura-do-projeto)
 - [Variáveis de Ambiente](#-variáveis-de-ambiente)
-- [Licença](#-licença)
 - [Contato](#-contato)
 
 ## ✨ Funcionalidades
@@ -51,7 +50,8 @@ Antes de começar, você vai precisar ter as seguintes ferramentas instaladas em
 -   Um banco de dados PostgreSQL [PostgreSQL](https://www.postgresql.org/)
 -   [Redis](https://redis.io/docs/getting-started/installation/)
 -   [Live Server](https://www.npmjs.com/package/live-server) (extensão do VSCode ou pacote npm global)
-Instalação e Configuração
+
+## 👾 Instalação e Configuração
 Siga os passos abaixo para configurar o ambiente de desenvolvimento.
 
 Clone o repositório:
