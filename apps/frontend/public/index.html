@@ -6,8 +6,10 @@
     <title>Feed de Posts</title>
     <link rel="stylesheet" href="https://cdn.amigotech.com.br/amigo-apps/doca-ui/min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
     <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="src/styles/main.css">
+    <link rel="stylesheet" href="assets/css/header.css">
+    <link rel="stylesheet" href="assets/css/modal.css">
     <link rel="stylesheet" href="assets/css/post.css">
     <link rel="stylesheet" href="assets/css/user.css">
 
@@ -18,7 +20,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
 
 
-
+    <script src="src/config/env.js"></script>
     <script src="src/app.js"></script>
     <script src="src/config/routes.js"></script>
 
@@ -42,7 +44,6 @@
 <body>
     <div ng-include="'src/views/partials/header.html'"></div>
     <div ng-view></div>
-    <div ng-include="'src/views/partials/footer.html'"></div>
 </body>
 
 </html>

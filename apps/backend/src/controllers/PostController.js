@@ -1,5 +1,4 @@
 import PostService from "../services/PostService.js";
-import { deleteImageFile } from "../utils/fileHelper.js";
 
 class PostController {
   async index(req, res) {
@@ -9,11 +8,17 @@ class PostController {
       const currentUserId = req.userId || null;
       const search = req.query.search || null;
 
-      const response = await PostService.listPosts({ limit, cursor, currentUserId, search });
+      const response = await PostService.listPosts({
+        limit,
+        cursor,
+        currentUserId,
+        search,
+      });
       return res.json(response);
     } catch (err) {
       console.error(err);
-      const message = err.message === "Cursor inválido" ? err.message : "Erro ao listar posts";
+      const message =
+        err.message === "Invalid cursor" ? err.message : "Error listing posts";
       return res.status(400).json({ error: message });
     }
   }
@@ -21,16 +26,11 @@ class PostController {
   async store(req, res) {
     try {
       const imagePath = req.file ? `/uploads/posts/${req.file.filename}` : null;
-      const dataToSave = { 
-        userId: req.userId, 
-        ...req.body, 
-        image: imagePath 
-    };
-    
-      const post = await PostService.createPost({ userId: req.userId, ...req.body, image: imagePath, });
+      const postData = { userId: req.userId, ...req.body, image: imagePath };
+      const post = await PostService.createPost(postData);
       return res.json(post);
     } catch (error) {
-      return res.status(500).json({ error: "Erro ao criar post" });
+      return res.status(500).json({ error: "Failed to create post" });
     }
   }
 
@@ -40,8 +40,16 @@ class PostController {
       const updatedPost = await PostService.updatePost(post_id, req.body);
       return res.json(updatedPost);
     } catch (error) {
-      const status = error.message === "Post não encontrado." ? 400 : 500;
-      return res.status(status).json({ error: error.message });
+      switch (error.message) {
+        case "Post not found.":
+          return res.status(404).json({ error: "Post not found." });
+        case "User is not the owner of the post.":
+          return res
+            .status(403)
+            .json({ error: "User is not the owner of the post." });
+        default:
+          return res.status(500).json({ error: "Failed to update post." });
+      }
     }
   }
 
@@ -51,10 +59,16 @@ class PostController {
       await PostService.deletePost(post_id, req.userId);
       return res.send();
     } catch (error) {
-      let status = 500;
-      if (error.message === "Esse post não existe.") status = 400;
-      if (error.message === "Requisição não autorizada.") status = 403;
-      return res.status(status).json({ error: error.message });
+      switch (error.message) {
+        case "Post not found.":
+          return res.status(404).json({ error: "Post not found." });
+        case "User is not the owner of the post.":
+          return res
+            .status(403)
+            .json({ error: "User is not the owner of the post." });
+        default:
+          return res.status(500).json({ error: "Failed to delete post." });
+      }
     }
   }
 }

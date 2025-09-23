@@ -1,10 +1,4 @@
-import {
-  Op,
-  literal,
-  where as sequelizeWhere,
-  fn as sequelizeFn,
-  col as sequelizeCol,
-} from "sequelize";
+import { Op, literal, where as sequelizeWhere, fn as sequelizeFn, col as sequelizeCol, } from "sequelize";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
 import sequelize from "../database/index.js";
@@ -29,14 +23,16 @@ class PostService {
     if (cached) return cached;
 
     const where = {
-      post_date: { [Op.ne]: null, [Op.lte]: new Date() },
+      post_date: { 
+        [Op.ne]: null, 
+        [Op.lte]: new Date() 
+      },
     };
 
     if (search) {
       const searchTermLower = search.toLowerCase();
 
       where[Op.and] = [
-        
         {
           [Op.or]: [
             sequelizeWhere(sequelizeFn("LOWER", sequelizeCol("title")), {
@@ -61,7 +57,7 @@ class PostService {
       const cursorId = parseInt(idStr, 10);
 
       if (Number.isNaN(cursorId) || isNaN(cursorDate.getTime())) {
-        throw new Error("Cursor inválido");
+        throw new Error("Invalid cursor");
       }
 
       where[Op.or] = [
@@ -158,7 +154,7 @@ class PostService {
   async updatePost(postId, data) {
     const updatedPost = await sequelize.transaction(async (t) => {
       const post = await Post.findByPk(postId, { transaction: t });
-      if (!post) throw new Error("Post não encontrado.");
+      if (!post) throw new Error("Post not found.");
       return post.update(data, { transaction: t });
     });
 
@@ -169,9 +165,9 @@ class PostService {
   async deletePost(postId, userId) {
     await sequelize.transaction(async (t) => {
       const post = await Post.findByPk(postId, { transaction: t });
-      if (!post) throw new Error("Esse post não existe.");
+      if (!post) throw new Error("This post doesn´t exists.");
       if (post.user_id !== userId) {
-        throw new Error("Requisição não autorizada.");
+        throw new Error("Requisition not authorized.");
       }
 
       await post.destroy({ transaction: t });

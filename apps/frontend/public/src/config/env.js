@@ -1,3 +1,3 @@
-export const APP_CONFIG = {
+const APP_CONFIG = {
     API_URL: 'http://localhost:3333'
 }

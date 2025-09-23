@@ -12,9 +12,9 @@ angular.module('app').controller('ModalLoginController', [
             $scope.loading = false;
             $uibModalInstance.close(res.data);
           })
-          .catch(function(err) {
+          .catch((err) => {
             $scope.loading = false;
-            $scope.error = err.data.message || 'Erro no login';
+            $scope.error = err.message || 'Erro no login';
           });
       };
   

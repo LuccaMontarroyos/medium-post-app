@@ -10,7 +10,7 @@ class UserService {
       });
 
       if (userExist) {
-        throw new Error("Usuário já existe");
+        throw new Error("Email already registered.");
       }
 
       return await User.create(data, { transaction: t });
@@ -22,7 +22,7 @@ class UserService {
       const currentUser = await User.findByPk(userId, { transaction: t });
 
       if (!currentUser) {
-        throw new Error("Usuário não encontrado.");
+        throw new Error("User not found.");
       }
 
       const { email, oldPassword } = data;
@@ -34,12 +34,12 @@ class UserService {
         });
 
         if (userExist) {
-          throw new Error("Usuário já existe.");
+          throw new Error("Email already registered.");
         }
       }
 
       if (oldPassword && !(await currentUser.checkPassword(oldPassword))) {
-        throw new Error("Senha incorreta.");
+        throw new Error("Incorrect password.");
       }
 
       return await currentUser.update(data, { transaction: t });

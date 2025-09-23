@@ -10,8 +10,8 @@ class SessionController {
     } catch (error) {
       
       const status =
-        error.message === "Usuário não existe." || error.message === "Senha inválida."
-          ? 401
+        error.message === "Email not registered." || error.message === "Invalid password."
+          ? 403
           : 500;
       return res.status(status).json({ error: error.message });
     }

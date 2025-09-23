@@ -13,6 +13,8 @@ class PostLike extends Model {
       },
       {
         sequelize,
+        modelName: "PostLike",
+        tableName: "post_like",
       }
     );
 

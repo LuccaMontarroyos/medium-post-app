@@ -1,10 +1,8 @@
-
 import multer from "multer";
 import path from "path";
 import fs from "fs";
 
 const uploadFolder = path.resolve(process.cwd(), "uploads", "posts");
-
 
 fs.mkdirSync(uploadFolder, { recursive: true });
 

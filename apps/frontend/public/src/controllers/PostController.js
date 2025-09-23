@@ -16,6 +16,14 @@ angular.module('app').controller('PostController', [
         $scope.editMode = !!postEdit;
         $scope.modalTitle = $scope.editMode ? 'Update Post' : 'New Post';
 
+        function getFormattedDateTime() {
+            const now = new Date();        
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            return now.toISOString().slice(0, 16);
+        }
+
+        $scope.minDateTime = getFormattedDateTime();
+
         if ($scope.editMode) {
             $scope.postData = angular.copy(postEdit);
         }

@@ -7,12 +7,12 @@ class UserController {
       const { id, name, email } = user;
       return res.json({ id, name, email });
     } catch (error) {
-      console.error(error);
-      const message =
-        error.message === "Usuário já existe"
-          ? error.message
-          : "Erro ao criar usuário.";
-      return res.status(400).json({ error: message });
+      switch (error.message) {
+        case "Email already registered.":
+          return res.status(409).json({ error: "A user with this email already exists." });
+        default:
+          return res.status(500).json({ error: "Failed to create user." });
+      }
     }
   }
 
@@ -23,11 +23,16 @@ class UserController {
       return res.json({ id, name, email });
     } catch (error) {
       console.error(error);
-
-      let status = 400;
-      if (error.message === "Senha incorreta.") status = 403;
-
-      return res.status(status).json({ error: error.message });
+      switch (error.message) {
+        case "User not found.":
+          return res.status(404).json({ error: "User not found." });
+        case "Email already registered.":
+          return res.status(409).json({ error: "A user with this email already exists." });
+        case "Incorrect password.":
+          return res.status(403).json({ error: "Incorrect password." });
+        default:
+          return res.status(500).json({ error: "Failed to update user." });
+      }
     }
   }
 }

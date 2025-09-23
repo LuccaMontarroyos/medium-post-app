@@ -1,7 +1,5 @@
-import { APP_CONFIG } from "../config/env";
-
 angular.module('app')
-.service('AuthService', ['$http', function($http) {
+.service('AuthService', ['$http', "APP_CONFIG", function($http, APP_CONFIG) {
     const API = APP_CONFIG.API_URL;
 
     this.login = function(credentials) {

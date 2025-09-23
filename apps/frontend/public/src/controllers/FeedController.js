@@ -143,12 +143,12 @@ angular.module("app").controller("FeedController", [
 
     angular.element($window).bind("scroll", function () {
       if (
-        $location.search().search &&
         $window.innerHeight + $window.scrollY >=
           document.body.offsetHeight - 100
       ) {
         $scope.$apply(() => {
-          $scope.loadPosts(null);
+          var currentSearchTerm = $location.search().search || null;
+          $scope.loadPosts(currentSearchTerm);
         });
       }
     });

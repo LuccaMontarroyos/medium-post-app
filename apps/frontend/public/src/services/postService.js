@@ -1,7 +1,5 @@
-import { APP_CONFIG } from "../config/env";
-
 angular.module('app')
-.service('PostService', ['$http', 'AuthService', function($http, AuthService) {
+.service('PostService', ['$http', 'AuthService', "APP_CONFIG", function($http, AuthService, APP_CONFIG) {
     const API = APP_CONFIG.API_URL;
 
     this.getPosts = function(cursor, limit = 5, searchTerm = null) {
@@ -24,6 +22,10 @@ angular.module('app')
         fd.append('title', postData.title);
         fd.append('text', postData.text);
         fd.append('resume', postData.resume);
+
+        if (postData.post_date) {
+            fd.append('post_date', postData.post_date);
+        }
 
         if (postData.imageFile) {
             fd.append('image', postData.imageFile, postData.imageFile.name);

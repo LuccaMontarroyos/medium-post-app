@@ -9,8 +9,8 @@
             <span class="draft-status">{{modalTitle}}</span>
         </div>
         <div class="editor-actions">
-            <button class="publish-btn" ng-click="save()" 
-                    ng-disabled="postForm.$invalid || (!editMode && !postData.imageFile) || isSaving">
+            <button class="publish-btn" ng-click="save()"
+                ng-disabled="postForm.$invalid || (!editMode && !postData.imageFile) || isSaving">
                 {{ editMode ? 'Salvar Alterações' : 'Publicar' }}
             </button>
             <button type="button" class="close-editor-btn" ng-click="cancel()">
@@ -27,7 +27,7 @@
                     <img ng-src="{{imagePreviewUrl}}" alt="Image preview">
                     <button class="remove-image-btn" ng-click="removeImage()">×</button>
                 </div>
-                <div class="form-group" ng-show="!imagePreviewUrl">
+                <div class="form-group login-input" ng-show="!imagePreviewUrl">
                     <label for="file-upload" class="custom-file-upload">+ Adicionar Imagem</label>
                     <input id="file-upload" type="file" file-model="postData.imageFile" ng-required="!editMode" />
                 </div>
@@ -38,31 +38,25 @@
                 <img ng-src="{{postData.image}}" alt="Imagem do post">
             </div>
 
-            <div class="form-group">
-                <input 
-                    type="text" 
-                    class="editor-title-input" 
-                    placeholder="Title" 
-                    ng-model="postData.title"
-                    required>
+            <div class="form-group login-input">
+                <input type="text" class="editor-title-input" placeholder="Title" ng-model="postData.title" required>
             </div>
-            <div class="form-group">
-                <textarea 
-                    class="editor-content-input" 
-                    rows="15" 
-                    placeholder="Tell your story..."
-                    ng-model="postData.text"
+            <div class="form-group login-input">
+                <textarea class="editor-content-input" rows="15" placeholder="Tell your story..."
+                    ng-model="postData.text" required>
+                </textarea>
+            </div>
+            <div class="form-group login-input">
+                <textarea class="editor-summary-input" rows="3" placeholder="Post summary" ng-model="postData.resume"
                     required>
                 </textarea>
             </div>
-            <div class="form-group">
-                <textarea 
-                    class="editor-summary-input" 
-                    rows="3" 
-                    placeholder="Post summary" 
-                    ng-model="postData.resume" 
-                    required>
-                </textarea>
+            <div class="form-group" ng-if="!editMode">
+                <div class="schedule-input-wrapper">
+                    <label for="post-date">Schedule post (optional)</label>
+                    <input type="datetime-local" id="post-date" class="schedule-input" ng-model="postData.post_date"
+                        min="{{minDateTime}}" />
+                </div>
             </div>
         </form>
         <div ng-if="error" class="alert alert-danger">{{ error }}</div>
