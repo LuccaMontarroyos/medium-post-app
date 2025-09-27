@@ -1,1 +1,1 @@
-angular.module("app", ["ngRoute", "ui.bootstrap"]).constant('APP_CONFIG', APP_CONFIG);
+angular.module("app", ["ngRoute", "ui.bootstrap", "ngSanitize"]).constant('APP_CONFIG', APP_CONFIG);

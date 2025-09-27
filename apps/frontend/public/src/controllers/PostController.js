@@ -1,5 +1,3 @@
-// src/controllers/PostController.js
-
 angular.module('app').controller('PostController', [
     '$scope',
     '$uibModalInstance',

@@ -1,9 +1,11 @@
 <div ng-controller="FeedController">
-    <div ng-if="loading">Carregando posts...</div>
-    <div ng-if="error">{{ error }}</div>
-  
-    <div class="feed">
-      <post-card ng-repeat="post in posts" post="post" on-edit="openEditPostModal(post)" on-remove="removePost(post)" on-toggle-like="toggleLike(post)"></post-card>
-    </div>
+  <div ng-if="loading">Carregando posts...</div>
+  <div ng-if="error">{{ error }}</div>
+
+  <div class="feed">
+    <a href="#!/posts/{{post.id}}" class="post-card-link" ng-repeat="post in posts">
+      <post-card post="post" on-edit="openEditPostModal(post)" on-remove="removePost(post)"
+        on-toggle-like="toggleLike(post)"></post-card>
+    </a>
   </div>
-  
+</div>

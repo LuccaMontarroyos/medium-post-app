@@ -130,6 +130,50 @@ class PostService {
     return response;
   }
 
+  async getPostById(postId, currentUserId) {
+    const backendUrl = process.env.BASE_URL;
+
+    const attributesToInclude = [
+      [
+        sequelize.literal(`(SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.is_deleted = false)`),
+        "totalLikes",
+      ],
+    ];
+
+    if (currentUserId) {
+      attributesToInclude.push([
+        sequelize.literal(`(SELECT EXISTS (SELECT 1 FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.user_id = ${currentUserId} AND pl.is_deleted = false))`),
+        "isLikedByUser",
+      ]);
+    }
+
+    const post = await Post.findByPk(postId, {
+      include: [{ model: User, as: "users", attributes: ["id", "name", "email"] }],
+      attributes: {
+        include: attributesToInclude,
+      },
+    });
+
+    if (!post) {
+      throw new Error("Post not found.");
+    }
+
+    const data = post.toJSON();
+    return {
+      id: data.id,
+      title: data.title,
+      text: data.text,
+      resume: data.resume,
+      post_date: data.post_date,
+      image: data.image ? `${backendUrl}${data.image}` : null,
+      user: data.users,
+      totalLikes: Number(data.totalLikes || 0),
+      isLikedByUser: data.isLikedByUser || false,
+      allowEdit: currentUserId === data.user_id,
+      allowRemove: currentUserId === data.user_id,
+    };
+  }
+
   async createPost({ userId, title, text, resume, post_date, image }) {
     const post = await sequelize.transaction(async (t) => {
       const dateToUse = post_date ? new Date(post_date) : new Date();

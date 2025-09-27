@@ -8,5 +8,9 @@ angular.module("app")
             templateUrl: "src/views/home.html",
             controller: "FeedController"
         })
+        .when("/posts/:postId", {
+            templateUrl: "src/views/postView.html",
+            controller: "PostViewController"
+          })
         .otherwise({ redirectTo: "/" });
 });

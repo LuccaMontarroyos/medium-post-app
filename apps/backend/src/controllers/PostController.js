@@ -23,6 +23,21 @@ class PostController {
     }
   }
 
+  async show(req, res) {
+    try {
+      const { post_id } = req.params;
+      const currentUserId = req.userId || null;
+
+      const post = await PostService.getPostById(post_id, currentUserId);
+      return res.json(post);
+    } catch (error) {
+      if (error.message == "Post not found.") {
+        return res.status(404).json({ error: "Post not found." });
+      }
+      return res.status(500).json({ error: "Failed to retrieve post."})
+    }
+  }
+
   async store(req, res) {
     try {
       const imagePath = req.file ? `/uploads/posts/${req.file.filename}` : null;

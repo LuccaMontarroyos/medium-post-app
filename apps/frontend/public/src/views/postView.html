@@ -1,0 +1,26 @@
+<div ng-include="'src/views/header.html'"></div>
+
+<div class="post-view-container" ng-if="!loading && post">
+    <article>
+        <h1 class="post-view-title">{{ post.title }}</h1>
+
+        <p class="post-view-resume" ng-if="post.resume">{{ post.resume }}</p>
+        
+        <div class="author-info-bar">
+            <div class="user-avatar">{{ post.user.name.charAt(0) | uppercase }}</div>
+            <div class="author-details">
+                <span class="author-name">{{ post.user.name }}</span>
+                <span class="post-meta-date">{{ post.post_date | date:'MMM d, yyyy' }}</span>
+            </div>
+        </div>
+
+        <div class="post-view-image" ng-if="post.image">
+            <img ng-src="{{ post.image }}" alt="{{ post.title }}">
+        </div>
+
+        <div class="post-view-content" ng-bind-html="post.text | linky:'_blank'"></div>
+    </article>
+</div>
+
+<div ng-if="loading" class="loading-message">Loading post...</div>
+<div ng-if="error" class="error-message">{{ error }}</div>

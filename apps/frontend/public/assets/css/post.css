@@ -11,6 +11,21 @@
     overflow: hidden;
 }
 
+.post-card-link,
+.post-card-link:hover {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.post-view-resume {
+    font-size: 22px;
+    color: #757575;
+    line-height: 1.4;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
 .post-content-wrapper {
     display: flex;
     width: 100%;
@@ -526,4 +541,71 @@ input[type="file"] {
     font-size: 1.2em;
     line-height: 1.6;
     padding: 10px 0;
+}
+
+.post-view-container {
+    max-width: 740px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.post-view-title {
+    font-family: 'Georgia', serif;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.author-info-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.author-info-bar .user-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    margin-right: 12px;
+}
+
+.author-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.author-details .author-name {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.author-details .post-meta-date {
+    color: #757575;
+    font-size: 14px;
+}
+
+.post-view-image {
+    margin-bottom: 30px;
+}
+
+.post-view-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.post-view-content {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 20px;
+    line-height: 1.7;
+    color: #333;
+    white-space: pre-wrap;
+}
+
+.loading-message, .error-message {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 18px;
+    color: #757575;
 }

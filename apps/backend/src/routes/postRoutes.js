@@ -1,5 +1,3 @@
-// backend/src/routes/postRoutes.js
-
 import { Router, json as jsonParser } from "express";
 import { upload } from "../config/multer.js";
 
@@ -15,6 +13,8 @@ import requireImage from "../middlewares/requireImage.js";
 const postRoutes = new Router();
 
 postRoutes.get("/", optionalAuthMiddleware, PostController.index);
+
+postRoutes.get("/:post_id", optionalAuthMiddleware, PostController.show);
 
 postRoutes.use(authMiddleware);
 
