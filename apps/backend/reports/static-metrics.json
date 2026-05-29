@@ -1,0 +1,387 @@
+{
+  "generatedAt": "2026-05-28T15:22:14.851Z",
+  "tool": "typhonjs-escomplex",
+  "filesAnalyzed": 42,
+  "averageCyclomaticComplexity": 4.69,
+  "totalFunctionsAnalyzed": 0,
+  "coupling": {
+    "moduleCount": 42,
+    "dependencyEdges": 56,
+    "averageEfferentCoupling": 1.33,
+    "averageAfferentCoupling": 1.21,
+    "couplingByLayer": {
+      "other -> other": 10,
+      "other -> middlewares": 7,
+      "controllers -> services": 4,
+      "controllers -> metrics": 1,
+      "facades -> factories": 1,
+      "facades -> repositories": 1,
+      "factories -> strategies": 3,
+      "middlewares -> other": 2,
+      "middlewares -> metrics": 1,
+      "repositories -> models": 4,
+      "other -> controllers": 5,
+      "services -> models": 1,
+      "services -> other": 7,
+      "services -> repositories": 3,
+      "services -> facades": 1,
+      "services -> serializers": 1,
+      "services -> metrics": 1,
+      "strategies -> strategies": 3
+    },
+    "instabilityIndex": 0.52
+  },
+  "cohesionByLayer": {
+    "other": {
+      "modules": 14,
+      "averageMaintainability": 122.09,
+      "cohesionProxy": "moderate"
+    },
+    "controllers": {
+      "modules": 5,
+      "averageMaintainability": 107.77,
+      "cohesionProxy": "moderate"
+    },
+    "facades": {
+      "modules": 1,
+      "averageMaintainability": 134.04,
+      "cohesionProxy": "single-responsibility module"
+    },
+    "factories": {
+      "modules": 1,
+      "averageMaintainability": 126.41,
+      "cohesionProxy": "single-responsibility module"
+    },
+    "metrics": {
+      "modules": 1,
+      "averageMaintainability": 128.15,
+      "cohesionProxy": "single-responsibility module"
+    },
+    "middlewares": {
+      "modules": 5,
+      "averageMaintainability": 115.77,
+      "cohesionProxy": "moderate"
+    },
+    "models": {
+      "modules": 3,
+      "averageMaintainability": 119.26,
+      "cohesionProxy": "high"
+    },
+    "repositories": {
+      "modules": 3,
+      "averageMaintainability": 123.37,
+      "cohesionProxy": "high"
+    },
+    "serializers": {
+      "modules": 1,
+      "averageMaintainability": 115.06,
+      "cohesionProxy": "single-responsibility module"
+    },
+    "services": {
+      "modules": 4,
+      "averageMaintainability": 104.62,
+      "cohesionProxy": "high"
+    },
+    "strategies": {
+      "modules": 4,
+      "averageMaintainability": 137.76,
+      "cohesionProxy": "high"
+    }
+  },
+  "perFile": [
+    {
+      "module": "services/PostService.js",
+      "cyclomaticComplexity": 24,
+      "maintainabilityIndex": 92.84,
+      "linesOfCode": 140,
+      "dependencies": 8
+    },
+    {
+      "module": "controllers/PostController.js",
+      "cyclomaticComplexity": 19,
+      "maintainabilityIndex": 89.26,
+      "linesOfCode": 110,
+      "dependencies": 1
+    },
+    {
+      "module": "middlewares/SchemaValidator.js",
+      "cyclomaticComplexity": 12,
+      "maintainabilityIndex": 109.86,
+      "linesOfCode": 45,
+      "dependencies": 2
+    },
+    {
+      "module": "services/UserService.js",
+      "cyclomaticComplexity": 12,
+      "maintainabilityIndex": 112.56,
+      "linesOfCode": 33,
+      "dependencies": 2
+    },
+    {
+      "module": "metrics/MetricsService.js",
+      "cyclomaticComplexity": 8,
+      "maintainabilityIndex": 128.15,
+      "linesOfCode": 22,
+      "dependencies": 0
+    },
+    {
+      "module": "controllers/UserController.js",
+      "cyclomaticComplexity": 7,
+      "maintainabilityIndex": 90.08,
+      "linesOfCode": 62,
+      "dependencies": 1
+    },
+    {
+      "module": "schemas/UserSchema.js",
+      "cyclomaticComplexity": 7,
+      "maintainabilityIndex": 111.68,
+      "linesOfCode": 58,
+      "dependencies": 1
+    },
+    {
+      "module": "serializers/PostSerializer.js",
+      "cyclomaticComplexity": 7,
+      "maintainabilityIndex": 115.06,
+      "linesOfCode": 23,
+      "dependencies": 0
+    },
+    {
+      "module": "config/redis.js",
+      "cyclomaticComplexity": 6,
+      "maintainabilityIndex": 120.25,
+      "linesOfCode": 22,
+      "dependencies": 1
+    },
+    {
+      "module": "models/User.js",
+      "cyclomaticComplexity": 6,
+      "maintainabilityIndex": 122.12,
+      "linesOfCode": 23,
+      "dependencies": 2
+    },
+    {
+      "module": "app.js",
+      "cyclomaticComplexity": 5,
+      "maintainabilityIndex": 127.77,
+      "linesOfCode": 20,
+      "dependencies": 8
+    },
+    {
+      "module": "config/multer.js",
+      "cyclomaticComplexity": 5,
+      "maintainabilityIndex": 109.02,
+      "linesOfCode": 34,
+      "dependencies": 3
+    },
+    {
+      "module": "factories/FeedStrategyFactory.js",
+      "cyclomaticComplexity": 5,
+      "maintainabilityIndex": 126.41,
+      "linesOfCode": 10,
+      "dependencies": 3
+    },
+    {
+      "module": "repositories/PostRepository.js",
+      "cyclomaticComplexity": 5,
+      "maintainabilityIndex": 116.11,
+      "linesOfCode": 31,
+      "dependencies": 2
+    },
+    {
+      "module": "utils/ErrorMessages.js",
+      "cyclomaticComplexity": 5,
+      "maintainabilityIndex": 137.18,
+      "linesOfCode": 13,
+      "dependencies": 0
+    },
+    {
+      "module": "controllers/SessionController.js",
+      "cyclomaticComplexity": 4,
+      "maintainabilityIndex": 109.76,
+      "linesOfCode": 16,
+      "dependencies": 1
+    },
+    {
+      "module": "middlewares/optionalAuth.js",
+      "cyclomaticComplexity": 4,
+      "maintainabilityIndex": 106.73,
+      "linesOfCode": 20,
+      "dependencies": 1
+    },
+    {
+      "module": "repositories/UserRepository.js",
+      "cyclomaticComplexity": 4,
+      "maintainabilityIndex": 127.52,
+      "linesOfCode": 15,
+      "dependencies": 1
+    },
+    {
+      "module": "services/AuthService.js",
+      "cyclomaticComplexity": 4,
+      "maintainabilityIndex": 101.56,
+      "linesOfCode": 24,
+      "dependencies": 3
+    },
+    {
+      "module": "services/LikeService.js",
+      "cyclomaticComplexity": 4,
+      "maintainabilityIndex": 111.5,
+      "linesOfCode": 23,
+      "dependencies": 3
+    },
+    {
+      "module": "utils/fileHelper.js",
+      "cyclomaticComplexity": 4,
+      "maintainabilityIndex": 118.52,
+      "linesOfCode": 12,
+      "dependencies": 2
+    },
+    {
+      "module": "middlewares/auth.js",
+      "cyclomaticComplexity": 3,
+      "maintainabilityIndex": 104.4,
+      "linesOfCode": 23,
+      "dependencies": 3
+    },
+    {
+      "module": "middlewares/metricsMiddleware.js",
+      "cyclomaticComplexity": 3,
+      "maintainabilityIndex": 131.73,
+      "linesOfCode": 10,
+      "dependencies": 1
+    },
+    {
+      "module": "middlewares/requireImage.js",
+      "cyclomaticComplexity": 3,
+      "maintainabilityIndex": 126.14,
+      "linesOfCode": 9,
+      "dependencies": 0
+    },
+    {
+      "module": "models/Post.js",
+      "cyclomaticComplexity": 3,
+      "maintainabilityIndex": 116.67,
+      "linesOfCode": 20,
+      "dependencies": 1
+    },
+    {
+      "module": "models/PostLike.js",
+      "cyclomaticComplexity": 3,
+      "maintainabilityIndex": 119,
+      "linesOfCode": 18,
+      "dependencies": 1
+    },
+    {
+      "module": "repositories/LikeRepository.js",
+      "cyclomaticComplexity": 3,
+      "maintainabilityIndex": 126.48,
+      "linesOfCode": 12,
+      "dependencies": 1
+    },
+    {
+      "module": "controllers/LikeController.js",
+      "cyclomaticComplexity": 2,
+      "maintainabilityIndex": 110.02,
+      "linesOfCode": 18,
+      "dependencies": 1
+    },
+    {
+      "module": "controllers/MetricsController.js",
+      "cyclomaticComplexity": 2,
+      "maintainabilityIndex": 139.75,
+      "linesOfCode": 5,
+      "dependencies": 1
+    },
+    {
+      "module": "facades/FeedFacade.js",
+      "cyclomaticComplexity": 2,
+      "maintainabilityIndex": 134.04,
+      "linesOfCode": 6,
+      "dependencies": 2
+    },
+    {
+      "module": "strategies/feed/FeedStrategy.js",
+      "cyclomaticComplexity": 2,
+      "maintainabilityIndex": 151.6,
+      "linesOfCode": 3,
+      "dependencies": 0
+    },
+    {
+      "module": "strategies/feed/MostLikedPostsStrategy.js",
+      "cyclomaticComplexity": 2,
+      "maintainabilityIndex": 132.64,
+      "linesOfCode": 6,
+      "dependencies": 2
+    },
+    {
+      "module": "strategies/feed/NewestPostsStrategy.js",
+      "cyclomaticComplexity": 2,
+      "maintainabilityIndex": 134.97,
+      "linesOfCode": 5,
+      "dependencies": 1
+    },
+    {
+      "module": "strategies/feed/TrendingPostsStrategy.js",
+      "cyclomaticComplexity": 2,
+      "maintainabilityIndex": 131.82,
+      "linesOfCode": 6,
+      "dependencies": 2
+    },
+    {
+      "module": "config/auth.js",
+      "cyclomaticComplexity": 1,
+      "maintainabilityIndex": 144.19,
+      "linesOfCode": 2,
+      "dependencies": 0
+    },
+    {
+      "module": "config/database.js",
+      "cyclomaticComplexity": 1,
+      "maintainabilityIndex": 109.5,
+      "linesOfCode": 11,
+      "dependencies": 1
+    },
+    {
+      "module": "routes/index.js",
+      "cyclomaticComplexity": 1,
+      "maintainabilityIndex": 123.61,
+      "linesOfCode": 5,
+      "dependencies": 5
+    },
+    {
+      "module": "routes/metricRoutes.js",
+      "cyclomaticComplexity": 1,
+      "maintainabilityIndex": 142.79,
+      "linesOfCode": 2,
+      "dependencies": 2
+    },
+    {
+      "module": "routes/postRoutes.js",
+      "cyclomaticComplexity": 1,
+      "maintainabilityIndex": 107.07,
+      "linesOfCode": 11,
+      "dependencies": 9
+    },
+    {
+      "module": "routes/sessionRoutes.js",
+      "cyclomaticComplexity": 1,
+      "maintainabilityIndex": 135.36,
+      "linesOfCode": 3,
+      "dependencies": 2
+    },
+    {
+      "module": "routes/userRoutes.js",
+      "cyclomaticComplexity": 1,
+      "maintainabilityIndex": 117.5,
+      "linesOfCode": 7,
+      "dependencies": 5
+    },
+    {
+      "module": "schemas/PostSchema.js",
+      "cyclomaticComplexity": 1,
+      "maintainabilityIndex": 104.86,
+      "linesOfCode": 14,
+      "dependencies": 1
+    }
+  ]
+}

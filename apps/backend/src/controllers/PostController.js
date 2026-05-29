@@ -7,12 +7,14 @@ class PostController {
       const cursor = req.query.cursor || null;
       const currentUserId = req.userId || null;
       const search = req.query.search || null;
+      const sort = req.query.sort || "newest";
 
       const response = await PostService.listPosts({
         limit,
         cursor,
         currentUserId,
         search,
+        sort
       });
       return res.json(response);
     } catch (err) {

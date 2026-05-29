@@ -1,26 +1,21 @@
 import sequelize from "../database/index.js";
-import PostLike from "../models/PostLike.js";
 import { delCache } from "../config/redis.js";
+import LikeRepository from "../repositories/LikeRepository.js";
 
 class LikeService {
   async toggleLike({ post_id, user_id }) {
     const like = await sequelize.transaction(async (t) => {
-      let existingLike = await PostLike.findOne({
-        where: { 
-          post_id, 
-          user_id 
-        },
-        transaction: t,
-      });
+  
+      let existingLike = await LikeRepository.findPostLike(post_id, user_id, t);
 
       if (!existingLike) {
-        existingLike = await PostLike.create(
+        existingLike = await LikeRepository.create(
           { 
             post_id, 
             user_id, 
             is_deleted: false 
           },
-          { transaction: t }
+          t
         );
       } else {
         existingLike.is_deleted = !existingLike.is_deleted;

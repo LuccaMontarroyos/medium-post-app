@@ -1,0 +1,170 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "Controllers" {
+  class PostController {
+    +index(req, res)
+    +show(req, res)
+    +store(req, res)
+    +update(req, res)
+    +destroy(req, res)
+  }
+
+  class LikeController {
+    +toggle(req, res)
+  }
+
+  class UserController {
+    +store(req, res)
+    +update(req, res)
+  }
+
+  class SessionController {
+    +store(req, res)
+  }
+
+  class MetricsController {
+    +index(req, res)
+  }
+}
+
+package "Services" {
+  class PostService {
+    +listPosts({limit, cursor, currentUserId, search, sort})
+    +getPostById(postId, currentUserId)
+    +createPost({userId, title, text, resume, post_date, image})
+    +updatePost(postId, data)
+    +deletePost(postId, userId)
+  }
+
+  class LikeService {
+    +toggleLike({post_id, user_id})
+  }
+
+  class UserService {
+    +createUser(data)
+    +updateUser(userId, data)
+  }
+
+  class AuthService {
+    +{static} login(email, password)
+  }
+}
+
+package "Patterns (Facade + Factory + Strategy)" {
+  class FeedFacade {
+    +getFeed(sort, params)
+  }
+
+  class FeedStrategyFactory {
+    +create(type)
+  }
+
+  abstract class FeedStrategy {
+    +execute(repository, params)
+  }
+
+  class NewestPostsStrategy {
+    +execute(repository, params)
+  }
+
+  class MostLikedPostsStrategy {
+    +execute(repository, params)
+  }
+
+  class TrendingPostsStrategy {
+    +execute(repository, params)
+  }
+}
+
+package "Repositories" {
+  class PostRepository {
+    +findPosts({where, attributesToInclude, limit, order})
+    +findById(postId, attributesToInclude)
+    +findByPk(postId, transaction)
+    +create(data, transaction)
+  }
+
+  class LikeRepository {
+    +findPostLike(post_id, user_id, transaction)
+    +create(data, transaction)
+  }
+
+  class UserRepository {
+    +findByEmail(email, transaction)
+    +findById(userId, transaction)
+    +create(data, transaction)
+  }
+}
+
+package "Serializer / Metrics" {
+  class PostSerializer {
+    +serialize(post, currentUserId, backendUrl)
+    +serializeMany(posts, currentUserId, backendUrl)
+  }
+
+  class MetricsService {
+    +incrementRequest(route)
+    +addResponseTime(route, time)
+    +incrementCacheHit()
+    +incrementCacheMiss()
+    +getMetrics()
+  }
+}
+
+package "Models" {
+  class User {
+    +id: int
+    +name: string
+    +email: string
+    +password_hash: string
+    +checkPassword(password)
+  }
+
+  class Post {
+    +id: int
+    +user_id: int
+    +title: string
+    +text: string
+    +resume: string
+    +post_date: date
+    +image: string
+  }
+
+  class PostLike {
+    +id: int
+    +user_id: int
+    +post_id: int
+    +is_deleted: boolean
+  }
+}
+
+PostController --> PostService
+LikeController --> LikeService
+UserController --> UserService
+SessionController --> AuthService
+MetricsController --> MetricsService
+
+PostService --> FeedFacade
+PostService --> PostRepository
+PostService --> PostSerializer
+PostService --> MetricsService
+LikeService --> LikeRepository
+UserService --> UserRepository
+
+FeedFacade --> FeedStrategyFactory
+FeedStrategyFactory --> FeedStrategy
+FeedStrategy <|-- NewestPostsStrategy
+FeedStrategy <|-- MostLikedPostsStrategy
+FeedStrategy <|-- TrendingPostsStrategy
+
+NewestPostsStrategy ..> PostRepository
+MostLikedPostsStrategy ..> PostRepository
+TrendingPostsStrategy ..> PostRepository
+
+User "1" --> "0..*" Post : creates
+Post "1" --> "0..*" PostLike : has
+User "1" --> "0..*" PostLike : likes
+
+@enduml

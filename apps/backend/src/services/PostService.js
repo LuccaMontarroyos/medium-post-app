@@ -1,9 +1,17 @@
-import { Op, literal, where as sequelizeWhere, fn as sequelizeFn, col as sequelizeCol, } from "sequelize";
-import Post from "../models/Post.js";
-import User from "../models/User.js";
+import {
+  Op,
+  literal,
+  where as sequelizeWhere,
+  fn as sequelizeFn,
+  col as sequelizeCol,
+} from "sequelize";
 import sequelize from "../database/index.js";
 import { getCache, setCache, delCache } from "../config/redis.js";
 import { deleteImageFile } from "../utils/fileHelper.js";
+import PostRepository from "../repositories/PostRepository.js";
+import FeedFacade from "../facades/FeedFacade.js";
+import PostSerializer from "../serializers/PostSerializer.js";
+import MetricsService from "../metrics/MetricsService.js";
 
 class PostService {
   async listPosts({
@@ -11,21 +19,27 @@ class PostService {
     cursor = null,
     currentUserId = null,
     search = null,
+    sort = "newest",
   }) {
     const backendUrl = process.env.BASE_URL;
 
     const searchForCache = search ? search.replace(/\s+/g, "_") : "all";
-    const cacheKey = `posts:search-${searchForCache}:cursor-${
+    const cacheKey = `posts:${sort}:search-${searchForCache}:cursor-${
       cursor || "first"
     }:limit-${limit}`;
 
     const cached = await getCache(cacheKey);
-    if (cached) return cached;
+    if (cached) {
+      MetricsService.incrementCacheHit();
+      return cached;
+    }
+
+    MetricsService.incrementCacheMiss();
 
     const where = {
-      post_date: { 
-        [Op.ne]: null, 
-        [Op.lte]: new Date() 
+      post_date: {
+        [Op.ne]: null,
+        [Op.lte]: new Date(),
       },
     };
 
@@ -49,7 +63,6 @@ class PostService {
       ];
     }
 
-    
     if (cursor) {
       const decoded = Buffer.from(cursor, "base64").toString("utf8");
       const [dateStr, idStr] = decoded.split("_");
@@ -69,7 +82,7 @@ class PostService {
     const attributesToInclude = [
       [
         literal(
-          `(SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.is_deleted = false)`
+          `(SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.is_deleted = false)`,
         ),
         "totalLikes",
       ],
@@ -78,44 +91,24 @@ class PostService {
     if (currentUserId) {
       attributesToInclude.push([
         literal(
-          `(SELECT EXISTS (SELECT 1 FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.user_id = ${currentUserId} AND pl.is_deleted = false))`
+          `(SELECT EXISTS (SELECT 1 FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.user_id = ${currentUserId} AND pl.is_deleted = false))`,
         ),
         "isLikedByUser",
       ]);
     }
 
-    const posts = await Post.findAll({
+    const posts = await FeedFacade.getFeed(sort, {
       where,
-      include: [
-        { model: User, as: "users", attributes: ["id", "name", "email"] },
-      ],
-      attributes: {
-        include: attributesToInclude,
-      },
-      order: [
-        ["post_date", "DESC"],
-        ["id", "DESC"],
-      ],
+      attributesToInclude,
       limit,
-      subQuery: false,
+      currentUserId,
     });
 
-    const formatted = posts.map((p) => {
-      const data = p.toJSON();
-      return {
-        id: data.id,
-        title: data.title,
-        text: data.text,
-        resume: data.resume,
-        post_date: data.post_date,
-        image: data.image ? `${backendUrl}${data.image}` : null,
-        user: data.users,
-        totalLikes: Number(data.totalLikes || 0),
-        allowEdit: currentUserId === data.user_id,
-        allowRemove: currentUserId === data.user_id,
-        isLikedByUser: data.isLikedByUser || false,
-      };
-    });
+    const formatted = PostSerializer.serializeMany(
+      posts,
+      currentUserId,
+      backendUrl,
+    );
 
     let nextCursor = null;
     if (posts.length > 0) {
@@ -135,50 +128,36 @@ class PostService {
 
     const attributesToInclude = [
       [
-        sequelize.literal(`(SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.is_deleted = false)`),
+        sequelize.literal(
+          `(SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.is_deleted = false)`,
+        ),
         "totalLikes",
       ],
     ];
 
     if (currentUserId) {
       attributesToInclude.push([
-        sequelize.literal(`(SELECT EXISTS (SELECT 1 FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.user_id = ${currentUserId} AND pl.is_deleted = false))`),
+        sequelize.literal(
+          `(SELECT EXISTS (SELECT 1 FROM post_likes pl WHERE pl.post_id = "Post"."id" AND pl.user_id = ${currentUserId} AND pl.is_deleted = false))`,
+        ),
         "isLikedByUser",
       ]);
     }
 
-    const post = await Post.findByPk(postId, {
-      include: [{ model: User, as: "users", attributes: ["id", "name", "email"] }],
-      attributes: {
-        include: attributesToInclude,
-      },
-    });
+    const post = await PostRepository.findById(postId, attributesToInclude);
 
     if (!post) {
       throw new Error("Post not found.");
     }
 
-    const data = post.toJSON();
-    return {
-      id: data.id,
-      title: data.title,
-      text: data.text,
-      resume: data.resume,
-      post_date: data.post_date,
-      image: data.image ? `${backendUrl}${data.image}` : null,
-      user: data.users,
-      totalLikes: Number(data.totalLikes || 0),
-      isLikedByUser: data.isLikedByUser || false,
-      allowEdit: currentUserId === data.user_id,
-      allowRemove: currentUserId === data.user_id,
-    };
+    return PostSerializer.serialize(post, currentUserId, backendUrl);
   }
 
   async createPost({ userId, title, text, resume, post_date, image }) {
     const post = await sequelize.transaction(async (t) => {
       const dateToUse = post_date ? new Date(post_date) : new Date();
 
-      return Post.create(
+      return PostRepository.create(
         {
           user_id: userId,
           title,
@@ -187,7 +166,7 @@ class PostService {
           post_date: dateToUse,
           image,
         },
-        { transaction: t }
+        t,
       );
     });
 
@@ -197,7 +176,7 @@ class PostService {
 
   async updatePost(postId, data) {
     const updatedPost = await sequelize.transaction(async (t) => {
-      const post = await Post.findByPk(postId, { transaction: t });
+      const post = await PostRepository.findByPk(postId, t);
       if (!post) throw new Error("Post not found.");
       return post.update(data, { transaction: t });
     });
@@ -208,7 +187,7 @@ class PostService {
 
   async deletePost(postId, userId) {
     await sequelize.transaction(async (t) => {
-      const post = await Post.findByPk(postId, { transaction: t });
+      const post = await PostRepository.findByPk(postId, t);
       if (!post) throw new Error("This post doesn´t exists.");
       if (post.user_id !== userId) {
         throw new Error("Requisition not authorized.");

@@ -1,0 +1,37 @@
+@startuml
+title Sequence - Toggle like (POST /posts/{post_id}/like)
+autonumber
+
+actor Usuario as U
+participant LikeController as LC
+participant LikeService as LS
+participant "Sequelize Transaction" as TX
+participant LikeRepository as LR
+database "Database" as DB
+participant "Redis Cache" as RC
+
+U -> LC: POST /posts/{post_id}/like
+LC -> LS: toggleLike({post_id, user_id})
+
+LS -> TX: begin()
+TX -> LR: findPostLike(post_id, user_id, t)
+LR -> DB: SELECT post_like by post_id + user_id
+DB --> LR: existingLike or null
+LR --> TX: existingLike or null
+
+alt like inexistente
+  TX -> LR: create({post_id, user_id, is_deleted=false}, t)
+  LR -> DB: INSERT post_like
+  DB --> LR: created like
+  LR --> TX: like
+else like existente
+  TX -> DB: UPDATE post_like SET is_deleted = !is_deleted
+  DB --> TX: updated like
+end
+
+TX --> LS: commit(like)
+LS -> RC: delCache("posts:*")
+LS --> LC: { liked: !like.is_deleted }
+LC --> U: 200 JSON
+
+@enduml

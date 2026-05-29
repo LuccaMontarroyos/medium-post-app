@@ -1,0 +1,46 @@
+@startuml
+title Sequence - Feed listing (GET /posts)
+autonumber
+
+actor Usuario as U
+participant PostController as PC
+participant PostService as PS
+participant "Redis Cache" as RC
+participant MetricsService as MS
+participant FeedFacade as FF
+participant FeedStrategyFactory as FSF
+participant "FeedStrategy" as STR
+participant PostRepository as PR
+database "Database" as DB
+participant PostSerializer as SER
+
+U -> PC: GET /posts?limit&cursor&search&sort
+PC -> PS: listPosts(params)
+
+PS -> RC: getCache(cacheKey)
+alt cache hit
+  RC --> PS: cached response
+  PS -> MS: incrementCacheHit()
+  PS --> PC: {posts, nextCursor}
+  PC --> U: 200 JSON
+else cache miss
+  RC --> PS: null
+  PS -> MS: incrementCacheMiss()
+  PS -> FF: getFeed(sort, params)
+  FF -> FSF: create(sort)
+  FSF --> FF: strategy
+  FF -> STR: execute(PostRepository, params)
+  STR -> PR: findPosts(where, attrs, limit, order)
+  PR -> DB: SELECT + JOIN users + likes
+  DB --> PR: rows
+  PR --> STR: posts
+  STR --> FF: posts
+  FF --> PS: posts
+  PS -> SER: serializeMany(posts, currentUserId, backendUrl)
+  SER --> PS: formatted posts
+  PS -> RC: setCache(cacheKey, response, 60)
+  PS --> PC: {posts, nextCursor}
+  PC --> U: 200 JSON
+end
+
+@enduml

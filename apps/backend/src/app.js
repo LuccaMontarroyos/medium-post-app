@@ -6,6 +6,8 @@ import path from "path";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "../swagger.json" with { type: "json" };
 
+import metricsMiddleware from "./middlewares/metricsMiddleware.js";
+
 import database from "./database/index.js";
 
 class App {
@@ -22,6 +24,7 @@ class App {
       "/uploads",
       express.static(path.resolve(process.cwd(), "uploads"))
     );
+    this.server.use(metricsMiddleware);
   }
 
   routes() {

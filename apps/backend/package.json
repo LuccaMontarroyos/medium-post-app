@@ -3,8 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon --exec sucrase-node src/server.js",
-    "dev": "nodemon --exec sucrase-node src/server.js"
+    "dev": "nodemon --exec sucrase-node src/server.js",
+    "start": "sucrase-node src/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "metrics": "sucrase-node scripts/generate-static-metrics.js",
+    "metrics:static": "npm run metrics"
   },
   "keywords": [],
   "author": "",
@@ -12,8 +17,11 @@
   "type": "module",
   "description": "",
   "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.4",
     "nodemon": "^3.1.10",
-    "sequelize-cli": "^6.6.3"
+    "sequelize-cli": "^6.6.3",
+    "typhonjs-escomplex": "^0.1.0",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

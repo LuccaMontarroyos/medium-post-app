@@ -1,0 +1,33 @@
+Table users {
+  id int [pk, increment]
+  name varchar [not null]
+  email varchar [not null, unique]
+  password_hash varchar [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table posts {
+  id int [pk, increment]
+  user_id int [not null]
+  title varchar [not null]
+  text varchar [not null]
+  resume varchar [not null]
+  post_date timestamp [not null]
+  image varchar
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table post_likes {
+  id int [pk, increment]
+  user_id int [not null]
+  post_id int [not null]
+  is_deleted boolean [not null, default: false]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Ref: posts.user_id > users.id [delete: cascade, update: cascade]
+Ref: post_likes.user_id > users.id
+Ref: post_likes.post_id > posts.id

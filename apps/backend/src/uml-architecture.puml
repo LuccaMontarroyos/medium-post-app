@@ -1,0 +1,37 @@
+@startuml
+title Arquitetura em camadas - Post Feed API
+left to right direction
+skinparam componentStyle rectangle
+
+actor Client
+
+package "Backend API (Express)" {
+  [Routes]
+  [Controllers]
+  [Services]
+  [Repositories]
+  [Facade + Factory + Strategies]
+  [Serializer]
+  [Middlewares\n(auth, optionalAuth, metrics, schema)]
+}
+
+database "Database\n(Sequelize)" as DB
+component "Redis Cache" as REDIS
+component "Swagger UI\n/api-docs" as SWAG
+component "Uploads\n(Multer)" as UP
+component "JWT Auth" as JWT
+
+Client --> [Routes]
+[Routes] --> [Middlewares\n(auth, optionalAuth, metrics, schema)]
+[Middlewares\n(auth, optionalAuth, metrics, schema)] --> [Controllers]
+[Controllers] --> [Services]
+[Services] --> [Facade + Factory + Strategies]
+[Services] --> [Repositories]
+[Services] --> [Serializer]
+[Repositories] --> DB
+[Services] --> REDIS
+[Controllers] --> SWAG
+[Controllers] --> UP
+[Middlewares\n(auth, optionalAuth, metrics, schema)] --> JWT
+
+@enduml
